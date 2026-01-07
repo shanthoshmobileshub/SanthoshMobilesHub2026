@@ -1,0 +1,17 @@
+Dev ID
+AKfycbx_suavo_O4ZvLxdZPF2xFpUTMBakgN0TeMyFEeAvbQY1PKGC7r5vpBlqgt6kyzywGn5g
+
+New Deplo ID:
+AKfycby7MN7S8hamPL2BIo9AurG9oz3H7COLr_O6LX3QmhRW1EXc3xyyUsdEnaLM7AeFmSAURA
+
+WEB App API:
+https://script.google.com/macros/s/AKfycby7MN7S8hamPL2BIo9AurG9oz3H7COLr_O6LX3QmhRW1EXc3xyyUsdEnaLM7AeFmSAURA/exec
+
+Library ID:
+https://script.google.com/macros/library/d/1L5mFV0ml0V6HTvHOYu6mEyNggJ-fUArhf6EQrYFXJcxSUTwM4ir55t8I/3
+
+Folder URL:
+https://drive.google.com/drive/folders/1GzuGSV3HhT8MjcejfnOcXMem9y4se4Xh?usp=sharing
+
+Sheets:
+https://docs.google.com/spreadsheets/d/1F8kWXs7HjH6_bBBJG84cApHVUko7fFQcT2_S9QU6ork/edit?usp=sharing

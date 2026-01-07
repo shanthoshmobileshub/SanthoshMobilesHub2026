@@ -1,0 +1,84 @@
+[
+  {
+    "id": 1,
+    "title": "iPhone 15 Pro",
+    "brand": "Apple",
+    "category": "Mobiles",
+    "condition": "Sealed Boxes",
+    "price": 119999,
+    "image": "/images/Mobiles/IPhone 15 Pro Max.png"
+  },
+  {
+    "id": 2,
+    "title": "Galaxy S23",
+    "brand": "Samsung",
+    "category": "Mobiles",
+    "condition": "Open Boxes (Non-Activated)",
+    "price": 54999,
+    "image": "/images/Mobiles/Galaxy S23 5G.png"
+  },
+  {
+    "id": 3,
+    "title": "AirPods Pro",
+    "brand": "Apple",
+    "category": "AirPods",
+    "condition": "11+ Months",
+    "price": 19999,
+    "image": "/images/AirPods/Airpods Pro.jpg"
+  },
+  {
+    "id": 4,
+    "title": "Pixel 8",
+    "brand": "Google",
+    "category": "Mobiles",
+    "condition": "2–5 Months",
+    "price": 44999,
+    "image": "/images/Mobiles/Pixel 9 Pro 5G.png"
+  },
+  {
+    "id": 5,
+    "title": "OnePlus 12",
+    "brand": "OnePlus",
+    "category": "Mobiles",
+    "condition": "Seal Cut (Less than 2 months)",
+    "price": 59999,
+    "image": "/images/Mobiles/Oneplus 15 5G.png"
+  },
+  {
+    "id": 6,
+    "title": "iPad Air",
+    "brand": "Apple",
+    "category": "iPads",
+    "condition": "Coming Soon",
+    "price": 0,
+    "image": "/images/iPads/iPad.png"
+  },
+  {
+    "id": 7,
+    "title": "Galaxy Buds Pro",
+    "brand": "Samsung",
+    "category": "Accessories",
+    "condition": "9–11 Months",
+    "price": 9999,
+    "image": "https://images.unsplash.com/photo-1541534401786-8b1f2f6b1d6d?w=800"
+  },
+  {
+    "id": 8,
+    "title": "Nothing Phone 2",
+    "brand": "Nothing",
+    "category": "Mobiles",
+    "condition": "11+ Months",
+    "price": 29999,
+    "image": "/images/Mobiles/Nothing 3a Pro.png"
+  }
+  ,
+  {
+    "id": 9,
+    "title": "Lenovo Tab",
+    "brand": "Lenovo",
+    "category": "Tabs",
+    "condition": "Coming Soon",
+    "price": 0,
+    "image": "/images/Tabs/Lenovo Tab.png"
+  }
+]
