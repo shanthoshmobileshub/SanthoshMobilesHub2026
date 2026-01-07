@@ -2,11 +2,12 @@
   "name": "santhoshmobiles",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://shanthoshmobileshub.github.io/MySite",
+  "homepage": "https://shanthoshmobileshub.github.io/SMH2026/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.2.0",
