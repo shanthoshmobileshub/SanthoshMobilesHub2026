@@ -45,9 +45,10 @@ export default function Navbar() {
   const { cart, addToCart: ctxAddToCart, removeFromCart: ctxRemoveFromCart } = useCart();
   const { items: wishlist, remove: ctxRemoveFromWishlist, toggle: ctxToggleWishlist } = useWishlist();
 
-  const [showAdminLoginModal, setShowAdminLoginModal] = useState(false); // Renamed for clarity
+  const [showAdminLoginModal, setShowAdminLoginModal] = useState(false);
   const [showWishlistDropdown, setShowWishlistDropdown] = useState(false);
   const [showCartDropdown, setShowCartDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const [password, setPassword] = useState(""); // Only need password for admin login in modal
   const [adminModalError, setAdminModalError] = useState("");
@@ -128,20 +129,28 @@ export default function Navbar() {
     <header className="w-full sticky top-0 z-50 transition-all duration-300">
       {/* MAIN NAV - GLASS EFFECT */}
       <div className="w-full glass-nav shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-6">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 md:gap-6">
+
+          {/* MOBILE MENU TOGGLE */}
+          <button
+            onClick={() => setShowMobileMenu(true)}
+            className="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-accent"
+          >
+            <FiMenu size={24} />
+          </button>
 
           {/* LOGO */}
           <div className="flex items-center gap-3 min-w-[220px]">
             <Link to="/" className="flex items-center gap-3 group">
-              <img src="/images/Favicon/SMLogo.png" alt="SM" className="w-10 h-10 object-contain drop-shadow-lg group-hover:scale-105 transition-transform" />
+              <img src={`${import.meta.env.BASE_URL}images/Favicon/SMLogo.png`} alt="SM" className="w-10 h-10 object-contain drop-shadow-lg group-hover:scale-105 transition-transform" />
               <div className="text-xl font-heading font-bold text-slate-900 dark:text-gray-100 tracking-wide">
                 Santhosh <span className="text-gradient-gold">Mobiles</span>
               </div>
             </Link>
           </div>
 
-          {/* SEARCH */}
-          <div className="flex-1 relative max-w-xl mx-auto" ref={searchRef}>
+          {/* SEARCH (Hidden on mobile initially, or styled to fit) */}
+          <div className="hidden md:block flex-1 relative max-w-xl mx-auto" ref={searchRef}>
             <form onSubmit={onSubmitSearch} className="relative group">
               <div className="flex items-center bg-gray-100 dark:bg-primary-light/50 border border-gray-200 dark:border-gray-700/50 rounded-full overflow-hidden focus-within:border-accent/50 focus-within:ring-1 focus-within:ring-accent/30 transition-all">
                 <span className="pl-4 text-gray-400 group-focus-within:text-accent"><FiSearch size={18} /></span>
@@ -173,7 +182,11 @@ export default function Navbar() {
                       onClick={() => { goToProduct(p.id); setShowSuggestions(false); }}
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-primary/50 flex items-center gap-4 border-b border-gray-200 dark:border-gray-800 last:border-none transition-colors"
                     >
-                      <img src={p.image} alt={p.title} className="w-12 h-12 object-contain bg-white rounded-md p-1 border border-gray-100" />
+                      <img
+                        src={p.image.startsWith('http') ? p.image : `${import.meta.env.BASE_URL}${p.image}`}
+                        alt={p.title}
+                        className="w-12 h-12 object-contain bg-white rounded-md p-1 border border-gray-100"
+                      />
                       <div className="flex-1">
                         <div className="text-sm font-medium text-slate-900 dark:text-gray-200 truncate">{p.title}</div>
                         <div className="text-xs text-gray-500 uppercase tracking-wider">{p.brand} • {p.category}</div>
@@ -254,8 +267,10 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* NAV CATEGORIES - SECONDARY BAR */}
-      <nav className="w-full bg-gray-50 dark:bg-primary-dark/95 border-b border-gray-200 dark:border-gray-800 backdrop-blur-sm transition-colors duration-300">
+
+
+      {/* NAV CATEGORIES - DESKTOP ONLY */}
+      <nav className="hidden md:block w-full bg-gray-50 dark:bg-primary-dark/95 border-b border-gray-200 dark:border-gray-800 backdrop-blur-sm transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4">
           <ul className="flex flex-wrap justify-center gap-x-8 gap-y-2 py-3 text-sm font-medium">
             {CATEGORIES.map((c) => {
@@ -274,51 +289,94 @@ export default function Navbar() {
       </nav>
 
       {/* ADMIN LOGIN MODAL */}
-      {showAdminLoginModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-primary-light w-full max-w-md rounded-2xl p-8 border border-gray-700 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0"></div>
+      {
+        showAdminLoginModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+            <div className="bg-primary-light w-full max-w-md rounded-2xl p-8 border border-gray-700 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0"></div>
 
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-heading font-bold text-white">Admin Access</h3>
-              <button onClick={() => setShowAdminLoginModal(false)} className="text-gray-400 hover:text-white transition-colors">
-                <FiX size={24} />
-              </button>
-            </div>
-
-            <div className="space-y-5">
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">Security Key</label>
-                <input
-                  className="w-full bg-primary-dark border border-gray-700 focus:border-accent text-white px-4 py-3 rounded-xl outline-none transition-all placeholder-gray-600"
-                  placeholder="Enter Passkey"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAdminLoginAttempt()}
-                />
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-heading font-bold text-white">Admin Access</h3>
+                <button onClick={() => setShowAdminLoginModal(false)} className="text-gray-400 hover:text-white transition-colors">
+                  <FiX size={24} />
+                </button>
               </div>
 
-              {adminModalError && (
-                <div className="text-red-400 text-sm bg-red-400/10 px-3 py-2 rounded-lg border border-red-400/20">
-                  {adminModalError}
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2">Security Key</label>
+                  <input
+                    className="w-full bg-primary-dark border border-gray-700 focus:border-accent text-white px-4 py-3 rounded-xl outline-none transition-all placeholder-gray-600"
+                    placeholder="Enter Passkey"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAdminLoginAttempt()}
+                  />
                 </div>
-              )}
 
-              <button
-                onClick={handleAdminLoginAttempt}
-                className="w-full btn-primary py-3 rounded-xl"
-              >
-                Authenticate
-              </button>
+                {adminModalError && (
+                  <div className="text-red-400 text-sm bg-red-400/10 px-3 py-2 rounded-lg border border-red-400/20">
+                    {adminModalError}
+                  </div>
+                )}
 
-              <div className="text-center text-xs text-gray-500 mt-4">
-                Authorized personnel only. All attempts are logged.
+                <button
+                  onClick={handleAdminLoginAttempt}
+                  className="w-full btn-primary py-3 rounded-xl"
+                >
+                  Authenticate
+                </button>
+
+                <div className="text-center text-xs text-gray-500 mt-4">
+                  Authorized personnel only. All attempts are logged.
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
+
+      {/* MOBILE MENU DRAWER */}
+      {
+        showMobileMenu && (
+          <div className="fixed inset-0 z-[60] z-50 flex">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowMobileMenu(false)} />
+
+            {/* Drawer */}
+            <div className="absolute left-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-primary-dark shadow-2xl p-6 overflow-y-auto transition-colors duration-300">
+              <div className="flex items-center justify-between mb-8">
+                <div className="text-xl font-heading font-bold text-slate-900 dark:text-white">
+                  Santhosh <span className="text-accent">Mobiles</span>
+                </div>
+                <button onClick={() => setShowMobileMenu(false)} className="text-gray-500 hover:text-red-500">
+                  <FiX size={24} />
+                </button>
+              </div>
+
+              <nav className="space-y-4">
+                {CATEGORIES.map(c => (
+                  <Link
+                    key={c}
+                    to={c === "Home" ? "/" : c === "All Products" ? "/shop" : `/shop?category=${encodeURIComponent(c)}`}
+                    onClick={() => setShowMobileMenu(false)}
+                    className="block text-lg font-medium text-slate-700 dark:text-gray-300 hover:text-accent border-b border-gray-100 dark:border-gray-800 pb-2"
+                  >
+                    {c}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
+                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Contact Us</h4>
+                <a href="tel:+919790225832" className="block text-slate-600 dark:text-gray-400 mb-2 hover:text-accent">+91 97902 25832</a>
+                <Link to="/admin" onClick={() => setShowMobileMenu(false)} className="block text-slate-600 dark:text-gray-400 hover:text-accent">Admin Login</Link>
+              </div>
+            </div>
+          </div>
+        )
+      }
 
       {/* DROPDOWNS */}
       <WishlistDropdown
@@ -335,6 +393,6 @@ export default function Navbar() {
         onRemoveItem={ctxRemoveFromCart}
         onProceedToPay={proceedToPay}
       />
-    </header>
+    </header >
   );
 }

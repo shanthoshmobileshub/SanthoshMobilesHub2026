@@ -30,7 +30,11 @@ const ProductCard = ({ product }) => {
         {/* IMAGE CONTAINER */}
         <div className="relative w-full h-48 bg-white/5 p-4 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-primary-dark/20 group-hover:bg-transparent transition-colors"></div>
-          <img src={image} alt={title} className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
+          <img
+            src={image?.startsWith('http') ? image : `${import.meta.env.BASE_URL}${image}`}
+            alt={title}
+            className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500"
+          />
         </div>
 
         <div className="p-4">

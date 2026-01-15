@@ -6,7 +6,7 @@
     "category": "Mobiles",
     "condition": "Sealed Boxes",
     "price": 119999,
-    "image": "/images/Mobiles/IPhone 15 Pro Max.png"
+    "image": "images/Mobiles/IPhone 15 Pro Max.png"
   },
   {
     "id": 2,
@@ -15,7 +15,7 @@
     "category": "Mobiles",
     "condition": "Open Boxes (Non-Activated)",
     "price": 54999,
-    "image": "/images/Mobiles/Galaxy S23 5G.png"
+    "image": "images/Mobiles/Galaxy S23 5G.png"
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@
     "category": "AirPods",
     "condition": "11+ Months",
     "price": 19999,
-    "image": "/images/AirPods/Airpods Pro.jpg"
+    "image": "images/AirPods/Airpods Pro.jpg"
   },
   {
     "id": 4,
@@ -33,7 +33,7 @@
     "category": "Mobiles",
     "condition": "2–5 Months",
     "price": 44999,
-    "image": "/images/Mobiles/Pixel 9 Pro 5G.png"
+    "image": "images/Mobiles/Pixel 9 Pro 5G.png"
   },
   {
     "id": 5,
@@ -42,7 +42,7 @@
     "category": "Mobiles",
     "condition": "Seal Cut (Less than 2 months)",
     "price": 59999,
-    "image": "/images/Mobiles/Oneplus 15 5G.png"
+    "image": "images/Mobiles/Oneplus 15 5G.png"
   },
   {
     "id": 6,
@@ -51,7 +51,7 @@
     "category": "iPads",
     "condition": "Coming Soon",
     "price": 0,
-    "image": "/images/iPads/iPad.png"
+    "image": "images/iPads/iPad.png"
   },
   {
     "id": 7,
@@ -69,9 +69,8 @@
     "category": "Mobiles",
     "condition": "11+ Months",
     "price": 29999,
-    "image": "/images/Mobiles/Nothing 3a Pro.png"
-  }
-  ,
+    "image": "images/Mobiles/Nothing 3a Pro.png"
+  },
   {
     "id": 9,
     "title": "Lenovo Tab",
@@ -79,6 +78,6 @@
     "category": "Tabs",
     "condition": "Coming Soon",
     "price": 0,
-    "image": "/images/Tabs/Lenovo Tab.png"
+    "image": "images/Tabs/Lenovo Tab.png"
   }
 ]
