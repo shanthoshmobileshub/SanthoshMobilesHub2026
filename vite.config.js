@@ -6,6 +6,9 @@ export default defineConfig(({ command }) => {
   return {
     base: command === 'build' ? '/SanthoshMobilesHub2026/' : '/',
     plugins: [react()],
+    build: {
+      outDir: 'dist',
+    }
   }
 })
 
