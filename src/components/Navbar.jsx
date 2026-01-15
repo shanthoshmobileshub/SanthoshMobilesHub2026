@@ -49,6 +49,7 @@ export default function Navbar() {
   const [showWishlistDropdown, setShowWishlistDropdown] = useState(false);
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false); // New state for mobile search
 
   const [password, setPassword] = useState(""); // Only need password for admin login in modal
   const [adminModalError, setAdminModalError] = useState("");
@@ -128,7 +129,7 @@ export default function Navbar() {
   return (
     <header className="w-full sticky top-0 z-50 transition-all duration-300">
       {/* MAIN NAV - GLASS EFFECT */}
-      <div className="w-full glass-nav shadow-lg">
+      <div className="w-full glass-nav shadow-lg relative">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 md:gap-6">
 
           {/* MOBILE MENU TOGGLE */}
@@ -139,17 +140,17 @@ export default function Navbar() {
             <FiMenu size={24} />
           </button>
 
-          {/* LOGO */}
-          <div className="flex items-center gap-3 min-w-[220px]">
-            <Link to="/" className="flex items-center gap-3 group">
-              <img src={`${import.meta.env.BASE_URL}images/Favicon/SMLogo.png`} alt="SM" className="w-10 h-10 object-contain drop-shadow-lg group-hover:scale-105 transition-transform" />
-              <div className="text-xl font-heading font-bold text-slate-900 dark:text-gray-100 tracking-wide">
+          {/* LOGO (Hidden if mobile search is active) */}
+          <div className={`flex items-center gap-2 min-w-0 shrink ${showMobileSearch ? 'hidden md:flex' : 'flex'}`}>
+            <Link to="/" className="flex items-center gap-2 md:gap-3 group min-w-0">
+              <img src={`${import.meta.env.BASE_URL}images/Favicon/SMLogo.png`} alt="SM" className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-lg group-hover:scale-105 transition-transform shrink-0" />
+              <div className="text-lg md:text-xl font-heading font-bold text-slate-900 dark:text-gray-100 tracking-wide truncate">
                 Santhosh <span className="text-gradient-gold">Mobiles</span>
               </div>
             </Link>
           </div>
 
-          {/* SEARCH (Hidden on mobile initially, or styled to fit) */}
+          {/* SEARCH (Desktop) */}
           <div className="hidden md:block flex-1 relative max-w-xl mx-auto" ref={searchRef}>
             <form onSubmit={onSubmitSearch} className="relative group">
               <div className="flex items-center bg-gray-100 dark:bg-primary-light/50 border border-gray-200 dark:border-gray-700/50 rounded-full overflow-hidden focus-within:border-accent/50 focus-within:ring-1 focus-within:ring-accent/30 transition-all">
@@ -172,7 +173,7 @@ export default function Navbar() {
               </div>
             </form>
 
-            {/* SEARCH SUGGESTIONS */}
+            {/* SEARCH SUGGESTIONS (Desktop) */}
             {showSuggestions && (
               <div ref={suggestionsRef} className="absolute left-0 right-0 mt-2 bg-white dark:bg-primary-light border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl z-50 max-h-80 overflow-auto backdrop-blur-xl">
                 {suggestions.length > 0 ? (
@@ -211,27 +212,62 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* MOBILE SEARCH INPUT (Visible when toggled) */}
+          {showMobileSearch && (
+            <div className="md:hidden flex-1 absolute inset-x-0 top-0 h-full bg-white dark:bg-primary-dark z-20 flex items-center px-4 animate-in fade-in slide-in-from-top-2 duration-200">
+              <form onSubmit={(e) => { onSubmitSearch(e); setShowMobileSearch(false); }} className="w-full flex items-center gap-2">
+                <div className="flex-1 flex items-center bg-gray-100 dark:bg-primary-light border border-gray-200 dark:border-gray-700 rounded-full h-10 px-4">
+                  <FiSearch className="text-gray-400 mr-2" />
+                  <input
+                    autoFocus
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search..."
+                    className="flex-1 bg-transparent border-none outline-none text-sm text-slate-900 dark:text-white placeholder-gray-500"
+                  />
+                </div>
+                <button type="button" onClick={() => setShowMobileSearch(false)} className="p-2 text-gray-500">
+                  <FiX size={20} />
+                </button>
+              </form>
+
+              {/* Mobile Suggestions Dropdown */}
+              {search.trim() && (
+                <div className="absolute top-full left-0 right-0 bg-white dark:bg-primary-dark border-t border-gray-100 dark:border-gray-800 shadow-xl max-h-[60vh] overflow-y-auto">
+                  {suggestions.map(p => (
+                    <button
+                      key={p.id}
+                      onClick={() => { goToProduct(p.id); setShowMobileSearch(false); setSearch(''); }}
+                      className="w-full flex items-center gap-3 p-3 border-b border-gray-50 dark:border-gray-800/50"
+                    >
+                      <img src={p.image.startsWith('http') ? p.image : `${import.meta.env.BASE_URL}${p.image}`} className="w-10 h-10 object-contain rounded bg-white" />
+                      <div className="text-left flex-1 min-w-0">
+                        <div className="text-sm font-medium text-slate-900 dark:text-gray-100 truncate">{p.title}</div>
+                        <div className="text-xs text-accent">₹{p.price}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* RIGHT SECTION */}
-          <div className="flex items-center gap-3 md:gap-5 min-w-0 justify-end ml-auto">
+          <div className="flex items-center gap-2 md:gap-5 min-w-0 justify-end ml-auto">
 
             {/* SEARCH ICON (Mobile Only) */}
             <button
-              onClick={() => {
-                if (searchRef.current) {
-                  searchRef.current.scrollIntoView({ behavior: 'smooth' });
-                  searchRef.current.querySelector('input')?.focus();
-                }
-              }}
+              onClick={() => setShowMobileSearch(true)}
               className="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-accent"
             >
-              <FiSearch size={20} />
+              <FiSearch size={22} />
             </button>
 
 
-            {/* THEME TOGGLE (Hidden on very small screens if tight, but user didn't ask to hide it. Keeping it.) */}
+            {/* THEME TOGGLE (Desktop Only - moved to menu for mobile) */}
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
+              className="hidden md:block p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
               title="Toggle Theme"
             >
               {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
@@ -255,7 +291,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* WISHLIST (Hidden on Mobile) */}
+            {/* WISHLIST (Hidden on Mobile - moved to menu) */}
             <div className="relative nav-wishlist hidden md:block">
               <button onClick={() => setShowWishlistDropdown((s) => !s)} className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors">
                 <FiHeart size={20} />
@@ -270,9 +306,9 @@ export default function Navbar() {
             {/* CART (Visible on Mobile) */}
             <div className="relative nav-cart">
               <button onClick={() => setShowCartDropdown((s) => !s)} className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors">
-                <FiShoppingCart size={20} />
+                <FiShoppingCart size={22} />
                 {cart.length > 0 && (
-                  <span className="absolute -top-0 -right-0 text-[10px] w-4 h-4 flex items-center justify-center bg-accent text-primary-dark font-bold rounded-full animate-pulse">
+                  <span className="absolute -top-1 -right-1 text-[10px] min-w-[1.25rem] h-5 px-1 flex items-center justify-center bg-accent text-primary-dark font-bold rounded-full animate-pulse ring-2 ring-white dark:ring-primary-dark">
                     {cart.length}
                   </span>
                 )}
@@ -355,61 +391,88 @@ export default function Navbar() {
       {/* MOBILE MENU DRAWER */}
       {
         showMobileMenu && (
-          <div className="fixed inset-0 z-[60] z-50 flex">
+          <div className="fixed inset-0 z-[60] flex">
             {/* Backdrop */}
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowMobileMenu(false)} />
 
             {/* Drawer */}
-            <div className="absolute left-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-primary-dark shadow-2xl p-6 overflow-y-auto transition-colors duration-300">
-              <div className="flex items-center justify-between mb-8">
-                <div className="text-xl font-heading font-bold text-slate-900 dark:text-white">
-                  Santhosh <span className="text-accent">Mobiles</span>
+            <div className="absolute left-0 top-0 bottom-0 w-[85%] max-w-xs bg-white dark:bg-primary-dark shadow-2xl overflow-y-auto transition-all duration-300 flex flex-col">
+
+              {/* Header of Drawer */}
+              <div className="p-6 bg-gradient-to-br from-gray-50 to-white dark:from-primary-light/30 dark:to-primary-dark border-b border-gray-100 dark:border-gray-800">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="text-xl font-heading font-bold text-slate-900 dark:text-white">
+                    Menu
+                  </div>
+                  <button onClick={() => setShowMobileMenu(false)} className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 hover:text-red-500 transition-colors">
+                    <FiX size={24} />
+                  </button>
                 </div>
-                <button onClick={() => setShowMobileMenu(false)} className="text-gray-500 hover:text-red-500">
-                  <FiX size={24} />
-                </button>
+
+                {/* USER PROFILE SECTION */}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                    <FiUser size={24} />
+                  </div>
+                  <div>
+                    {isAuthenticated ? (
+                      <>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">Admin User</div>
+                        <button onClick={() => { handleAdminLogout(); setShowMobileMenu(false); }} className="text-xs text-red-500 font-medium">Sign Out</button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">Guest User</div>
+                        <button onClick={() => { setShowAdminLoginModal(true); setShowMobileMenu(false); }} className="text-xs text-accent font-medium">Admin Login</button>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* WISHLIST & THEME QUICK ACTIONS */}
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => { setShowWishlistDropdown(true); setShowMobileMenu(false); }}
+                    className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-primary-light border border-gray-200 dark:border-gray-700 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-gray-200 hover:border-accent hover:text-accent transition-colors relative"
+                  >
+                    <FiHeart size={16} /> Wishlist
+                    {wishlist.length > 0 && <span className="absolute top-1 right-2 w-2 h-2 bg-accent rounded-full"></span>}
+                  </button>
+                  <button
+                    onClick={toggleTheme}
+                    className="flex-none p-2 bg-white dark:bg-primary-light border border-gray-200 dark:border-gray-700 rounded-lg text-slate-700 dark:text-gray-200 hover:border-accent hover:text-accent transition-colors"
+                  >
+                    {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
+                  </button>
+                </div>
               </div>
 
-              <nav className="space-y-4">
-                {CATEGORIES.map(c => (
-                  <Link
-                    key={c}
-                    to={c === "Home" ? "/" : c === "All Products" ? "/shop" : `/shop?category=${encodeURIComponent(c)}`}
-                    onClick={() => setShowMobileMenu(false)}
-                    className="block text-lg font-medium text-slate-700 dark:text-gray-300 hover:text-accent border-b border-gray-100 dark:border-gray-800 pb-2"
-                  >
-                    {c}
-                  </Link>
-                ))}
-              </nav>
-
-              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 space-y-4">
-                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Account & Support</h4>
-
-                {/* Mobile Admin/User */}
-                {isAuthenticated ? (
-                  <div className="flex flex-col gap-2">
-                    <Link to="/admin" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-2 text-slate-700 dark:text-gray-300 hover:text-accent">
-                      <FiUser /> Admin Dashboard
+              {/* Navigation Links */}
+              <div className="flex-1 p-6 overflow-y-auto">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop Categories</h4>
+                <nav className="space-y-1">
+                  {CATEGORIES.map(c => (
+                    <Link
+                      key={c}
+                      to={c === "Home" ? "/" : c === "All Products" ? "/shop" : `/shop?category=${encodeURIComponent(c)}`}
+                      onClick={() => setShowMobileMenu(false)}
+                      className="flex items-center justify-between p-3 rounded-xl text-slate-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-accent transition-all group"
+                    >
+                      <span className="font-medium">{c}</span>
+                      <span className="text-gray-300 group-hover:text-accent transition-colors">→</span>
                     </Link>
-                    <button onClick={() => { handleAdminLogout(); setShowMobileMenu(false); }} className="flex items-center gap-2 text-red-500 hover:text-red-600 text-left">
-                      Logout
-                    </button>
-                  </div>
-                ) : (
-                  <button onClick={() => { setShowAdminLoginModal(true); setShowMobileMenu(false); }} className="flex items-center gap-2 text-slate-700 dark:text-gray-300 hover:text-accent">
-                    <FiUser /> Admin Login
-                  </button>
-                )}
+                  ))}
+                </nav>
 
-                {/* Mobile Wishlist Link */}
-                <button onClick={() => { setShowWishlistDropdown(true); setShowMobileMenu(false); }} className="flex items-center gap-2 text-slate-700 dark:text-gray-300 hover:text-accent w-full text-left">
-                  <FiHeart /> Wishlist ({wishlist.length})
-                </button>
-
-                <div className="pt-4">
-                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Contact</h4>
-                  <a href="tel:+919790225832" className="block text-slate-600 dark:text-gray-400 hover:text-accent">+91 97902 25832</a>
+                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Support</h4>
+                  <a href="tel:+919790225832" className="flex items-center gap-3 p-3 rounded-xl text-slate-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-accent transition-all">
+                    <AiOutlineWhatsApp size={20} />
+                    <div>
+                      <div className="text-xs text-gray-400">Whatsapp & Support</div>
+                      <div className="font-bold">+91 97902 25832</div>
+                    </div>
+                  </a>
                 </div>
               </div>
             </div>
