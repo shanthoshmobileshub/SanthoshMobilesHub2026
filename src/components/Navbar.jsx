@@ -212,10 +212,23 @@ export default function Navbar() {
           </div>
 
           {/* RIGHT SECTION */}
-          <div className="flex items-center gap-5 min-w-[220px] justify-end">
+          <div className="flex items-center gap-3 md:gap-5 min-w-0 justify-end ml-auto">
+
+            {/* SEARCH ICON (Mobile Only) */}
+            <button
+              onClick={() => {
+                if (searchRef.current) {
+                  searchRef.current.scrollIntoView({ behavior: 'smooth' });
+                  searchRef.current.querySelector('input')?.focus();
+                }
+              }}
+              className="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-accent"
+            >
+              <FiSearch size={20} />
+            </button>
 
 
-            {/* THEME TOGGLE */}
+            {/* THEME TOGGLE (Hidden on very small screens if tight, but user didn't ask to hide it. Keeping it.) */}
             <button
               onClick={toggleTheme}
               className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
@@ -224,24 +237,26 @@ export default function Navbar() {
               {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
             </button>
 
-            {/* ADMIN */}
-            {isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <Link to="/admin" className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors" title="Admin Dashboard">
+            {/* ADMIN (Hidden on Mobile) */}
+            <div className="hidden md:flex items-center gap-3">
+              {isAuthenticated ? (
+                <>
+                  <Link to="/admin" className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors" title="Admin Dashboard">
+                    <FiUser size={20} />
+                  </Link>
+                  <button onClick={handleAdminLogout} className="text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => setShowAdminLoginModal(true)} className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors" title="Admin Login">
                   <FiUser size={20} />
-                </Link>
-                <button onClick={handleAdminLogout} className="text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors">
-                  Logout
                 </button>
-              </div>
-            ) : (
-              <button onClick={() => setShowAdminLoginModal(true)} className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors" title="Admin Login">
-                <FiUser size={20} />
-              </button>
-            )}
+              )}
+            </div>
 
-            {/* WISHLIST */}
-            <div className="relative nav-wishlist">
+            {/* WISHLIST (Hidden on Mobile) */}
+            <div className="relative nav-wishlist hidden md:block">
               <button onClick={() => setShowWishlistDropdown((s) => !s)} className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors">
                 <FiHeart size={20} />
                 {wishlist.length > 0 && (
@@ -252,7 +267,7 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* CART */}
+            {/* CART (Visible on Mobile) */}
             <div className="relative nav-cart">
               <button onClick={() => setShowCartDropdown((s) => !s)} className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors">
                 <FiShoppingCart size={20} />
@@ -368,10 +383,34 @@ export default function Navbar() {
                 ))}
               </nav>
 
-              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
-                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Contact Us</h4>
-                <a href="tel:+919790225832" className="block text-slate-600 dark:text-gray-400 mb-2 hover:text-accent">+91 97902 25832</a>
-                <Link to="/admin" onClick={() => setShowMobileMenu(false)} className="block text-slate-600 dark:text-gray-400 hover:text-accent">Admin Login</Link>
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 space-y-4">
+                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Account & Support</h4>
+
+                {/* Mobile Admin/User */}
+                {isAuthenticated ? (
+                  <div className="flex flex-col gap-2">
+                    <Link to="/admin" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-2 text-slate-700 dark:text-gray-300 hover:text-accent">
+                      <FiUser /> Admin Dashboard
+                    </Link>
+                    <button onClick={() => { handleAdminLogout(); setShowMobileMenu(false); }} className="flex items-center gap-2 text-red-500 hover:text-red-600 text-left">
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <button onClick={() => { setShowAdminLoginModal(true); setShowMobileMenu(false); }} className="flex items-center gap-2 text-slate-700 dark:text-gray-300 hover:text-accent">
+                    <FiUser /> Admin Login
+                  </button>
+                )}
+
+                {/* Mobile Wishlist Link */}
+                <button onClick={() => { setShowWishlistDropdown(true); setShowMobileMenu(false); }} className="flex items-center gap-2 text-slate-700 dark:text-gray-300 hover:text-accent w-full text-left">
+                  <FiHeart /> Wishlist ({wishlist.length})
+                </button>
+
+                <div className="pt-4">
+                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Contact</h4>
+                  <a href="tel:+919790225832" className="block text-slate-600 dark:text-gray-400 hover:text-accent">+91 97902 25832</a>
+                </div>
               </div>
             </div>
           </div>
