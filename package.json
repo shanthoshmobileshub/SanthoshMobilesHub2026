@@ -2,7 +2,7 @@
   "name": "santhoshmobiles",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://shanthoshmobileshub.github.io/SMH2026/",
+  "homepage": "https://shanthoshmobileshub.github.io/SanthoshMobilesHub2026/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
