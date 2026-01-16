@@ -72,7 +72,7 @@ export default function Checkout() {
     }
     setLoading(false)
 
-    const merchantUpi = 'merchant@upi' // 🔴 replace with real UPI
+    const merchantUpi = 'santhoshkumarchandru-1@okaxis'
     const merchantName = 'SanthoshMobiles'
     const orderRef = `SM-${Date.now()}`
     const upiLink = generateUpiLink(
