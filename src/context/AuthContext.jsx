@@ -15,8 +15,9 @@ export function AuthProvider({ children }) {
 
   function login(password) {
     // Check against the environment variable
-    const adminPasscode = import.meta.env.VITE_ADMIN_PASSCODE;
-    
+    // Hardcoded passcode as per user request to ensure deployment stability
+    const adminPasscode = "SMH@2026";
+
     if (password === adminPasscode) {
       sessionStorage.setItem("isAdminAuthenticated", "true");
       setIsAuthenticated(true);
