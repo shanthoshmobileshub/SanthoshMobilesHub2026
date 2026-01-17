@@ -1,4 +1,4 @@
-import{a as m,u as p,j as e,g as u,h as i,i as b,A as y}from"./index-Dhc_1A7U.js";import{F as j}from"./Footer-CYMxIsv2.js";function v(){const{cart:a=[],removeFromCart:o,clearCart:c}=m(),s=p(),l=t=>{if(typeof t=="number")return t;if(!t)return 0;const r=String(t).replace(/,/g,"");return Number(r)||0},n=a.reduce((t,r)=>t+l(r.price)*(r.qty||1),0),x=()=>{let t=`👋 Hello Santhosh Mobiles, I would like to place an order:
+import{a as m,u as p,j as e,g as u,h as i,i as b,A as y}from"./index-VA5hnDem.js";import{F as j}from"./Footer-C5SepdXm.js";function v(){const{cart:a=[],removeFromCart:o,clearCart:c}=m(),s=p(),l=t=>{if(typeof t=="number")return t;if(!t)return 0;const r=String(t).replace(/,/g,"");return Number(r)||0},n=a.reduce((t,r)=>t+l(r.price)*(r.qty||1),0),x=()=>{let t=`👋 Hello Santhosh Mobiles, I would like to place an order:
 
 `;a.forEach((d,h)=>{const g=l(d.price);t+=`${h+1}. *${d.title}* 
    Price: ₹${g.toLocaleString("en-IN")} x ${d.qty||1}
