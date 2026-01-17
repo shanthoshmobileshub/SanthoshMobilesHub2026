@@ -69,7 +69,7 @@ export default function ProductDetail() {
               {product.category}
             </span>
             <span>•</span>
-            <span>{product.condition || 'Brand New/Refurbished'}</span>
+            <span>{product.condition || 'Brand New'}</span>
           </div>
 
           <div className="text-4xl font-bold text-slate-900 dark:text-white mb-8">
