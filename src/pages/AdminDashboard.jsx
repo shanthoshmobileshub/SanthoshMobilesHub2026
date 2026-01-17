@@ -16,8 +16,31 @@ export default function AdminDashboard() {
     brand: "Apple",
     category: "Mobiles",
     price: "",
-    image: ""
+    image: "",
+    description: "",
+    imageBase64: "", // Store base64 string
+    mimeType: ""
   });
+
+  // Handle File Upload
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) return alert("Image too large. Max 4MB.");
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result.split(',')[1];
+        setNewProduct(prev => ({
+          ...prev,
+          imageBase64: base64,
+          mimeType: file.type,
+          image: prev.image || "Uploading..." // Visual indicator
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     if (activeTab === "orders") fetchOrders();
@@ -87,7 +110,8 @@ export default function AdminDashboard() {
         })
       });
       alert("Product Added Successfully!");
-      setNewProduct({ title: "", brand: "Apple", category: "Mobiles", price: "", image: "" }); // Reset
+      alert("Product Added Successfully!");
+      setNewProduct({ title: "", brand: "Apple", category: "Mobiles", price: "", image: "", description: "", imageBase64: "", mimeType: "" }); // Reset
       fetchProducts(); // Refresh list
     } catch (err) {
       alert("Failed to add product");
@@ -248,15 +272,43 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image URL</label>
-                  <input
-                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
-                    placeholder="https://..."
-                    value={newProduct.image}
-                    onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
-                  />
-                  <p className="text-xs text-gray-400 mt-1">Upload image to Imgur/Drive and paste direct link here.</p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Description</label>
+                    <textarea
+                      className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                      placeholder="Enter product features, condition, warranty..."
+                      rows="3"
+                      value={newProduct.description}
+                      onChange={e => setNewProduct({ ...newProduct, description: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image (Upload OR URL)</label>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-violet-50 file:text-violet-700
+                        hover:file:bg-violet-100 mb-2
+                      "
+                    />
+
+                    <div className="text-center text-xs text-gray-400 my-1">- OR -</div>
+
+                    <input
+                      className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                      placeholder="https://..."
+                      value={newProduct.image}
+                      onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+                    />
+                  </div>
                 </div>
 
                 <button
