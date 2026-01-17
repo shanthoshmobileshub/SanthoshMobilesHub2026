@@ -114,7 +114,8 @@ export default function AdminDashboard() {
       setNewProduct({ title: "", brand: "Apple", category: "Mobiles", price: "", image: "", description: "", imageBase64: "", mimeType: "" }); // Reset
       fetchProducts(); // Refresh list
     } catch (err) {
-      alert("Failed to add product");
+      console.error(err);
+      alert("Failed to add product. Error: " + err.toString());
     }
     setActionLoading(false);
   }
