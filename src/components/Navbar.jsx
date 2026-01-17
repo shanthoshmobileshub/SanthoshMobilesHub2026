@@ -45,6 +45,36 @@ export default function Navbar() {
   const { cart, addToCart: ctxAddToCart, removeFromCart: ctxRemoveFromCart } = useCart();
   const { items: wishlist, remove: ctxRemoveFromWishlist, toggle: ctxToggleWishlist } = useWishlist();
 
+  // --- RESTORED STATE ---
+  const [showAdminLoginModal, setShowAdminLoginModal] = useState(false);
+  const [showWishlistDropdown, setShowWishlistDropdown] = useState(false);
+  const [showCartDropdown, setShowCartDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+
+  const [password, setPassword] = useState("");
+  const [adminModalError, setAdminModalError] = useState("");
+
+  const searchRef = useRef(null);
+  const suggestionsRef = useRef(null);
+  // ----------------------
+
+  function handleAdminLoginAttempt() {
+    setAdminModalError("");
+    if (login(password)) { // Use the login function from AuthContext
+      setShowAdminLoginModal(false);
+      setPassword(""); // Clear password
+      navigate("/admin");
+    } else {
+      setAdminModalError("Invalid Admin Password");
+    }
+  }
+
+  function handleAdminLogout() {
+    logout(); // Use the logout function from AuthContext
+    navigate("/");
+  }
+
   const [showRepairModal, setShowRepairModal] = useState(false);
   const [repairForm, setRepairForm] = useState({ name: "", phone: "", mobile: "", problem: "" });
 
