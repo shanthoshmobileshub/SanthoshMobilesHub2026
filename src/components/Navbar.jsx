@@ -75,6 +75,29 @@ export default function Navbar() {
     navigate("/");
   }
 
+  // --- RESTORED HELPERS ---
+  function onSubmitSearch(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const q = search.trim();
+    const path = q ? `/shop?search=${encodeURIComponent(q)}` : "/shop";
+    navigate(path);
+    setShowSuggestions(false);
+  }
+
+  function addToCart(product) { ctxAddToCart(product) }
+  function removeFromCart(id) { ctxRemoveFromCart(id) }
+  function removeFromWishlist(id) { ctxRemoveFromWishlist(id) }
+
+  function goToProduct(id) {
+    navigate(`/product/${id}`);
+  }
+
+  function proceedToPay() {
+    navigate("/cart");
+    setShowCartDropdown(false);
+  }
+  // ------------------------
+
   const [showRepairModal, setShowRepairModal] = useState(false);
   const [repairForm, setRepairForm] = useState({ name: "", phone: "", mobile: "", problem: "" });
 
