@@ -4,7 +4,7 @@ import initialProducts from '../data/products.json'
 import Footer from '../components/Footer'
 import { useCart } from '../context/CartContext'
 
-const API_URL = "https://script.google.com/macros/s/AKfycbzkrLj5kD6dX5on-oQ_2aMPJYfx3rnRZktGhdzLnwRbkYLAr6JzbBm9JQZ2sTB9uU0_Mw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyZn3hERrmuATHMoOADARri9ewATpzuJOmJW1xBkksBl2XOHptfeFB18lUQXFa5eQ-xlw/exec";
 
 export default function ProductDetail() {
   const { id } = useParams()
