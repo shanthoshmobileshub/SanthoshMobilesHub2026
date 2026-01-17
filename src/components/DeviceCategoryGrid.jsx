@@ -8,7 +8,7 @@ const cards = [
 export default function DeviceCategoryGrid() {
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
-      <h3 className="text-xl font-heading font-bold text-slate-900 dark:text-white mb-6">Shop By Device Category</h3>
+      <h3 className="text-xl font-heading font-bold text-slate-900 dark:text-white mb-6">Shop Personalized Computer</h3>
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
         {cards.map(c => (
           <Link key={c} to={`/shop?condition=${encodeURIComponent(c)}`} className="bg-white border border-gray-200 dark:bg-primary-light/30 dark:border-gray-800 p-4 rounded-xl text-center hover:bg-gray-50 dark:hover:bg-primary-light hover:border-accent/40 hover:-translate-y-1 transition-all duration-300 group shadow-sm dark:shadow-none">
