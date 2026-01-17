@@ -122,7 +122,7 @@ export default function Navbar() {
   }
 
   function proceedToPay() {
-    navigate("/checkout");
+    navigate("/cart");
     setShowCartDropdown(false);
   }
 
