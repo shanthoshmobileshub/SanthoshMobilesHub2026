@@ -59,13 +59,18 @@ export default function Shop() {
           {category ? category : "All Products"}
         </h1>
         {products === initialProducts && (
-          <span className="text-xs text-gray-400">⚡ Fast Loaded (Catalog v1)</span>
+          <span className="text-xs text-gray-400">⚡ Fast Loaded (Catalog v2 - Live)</span>
         )}
       </div>
 
       {q && <p className="mb-6 text-gray-600 dark:text-gray-400">Showing results for <strong>"{q}"</strong></p>}
 
-      {filtered.length > 0 ? (
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+          <p className="mt-4 text-gray-500">Loading products...</p>
+        </div>
+      ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {filtered.map((p) => (
             <ProductCard key={p.id ?? p._id ?? Math.random()} product={p} />
