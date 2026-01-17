@@ -1,4 +1,4 @@
-const WEB_APP_URL ="https://script.google.com/macros/s/AKfycbznDdZ59fSqQecC1QZQauoo2Xntebc6gJrhygNOLlb5XSXjPMG6XYTky07adIUSATYuxg/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyZn3hERrmuATHMoOADARri9ewATpzuJOmJW1xBkksBl2XOHptfeFB18lUQXFa5eQ-xlw/exec";
 
 export async function fetchOrders() {
   const res = await fetch(WEB_APP_URL);
