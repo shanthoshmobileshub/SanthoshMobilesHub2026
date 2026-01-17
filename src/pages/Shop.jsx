@@ -21,7 +21,10 @@ export default function Shop() {
     async function fetchProducts() {
       try {
         setLoading(true);
-        const res = await fetch(`${API_URL}?action=getProducts`);
+        const [res, _] = await Promise.all([
+          fetch(`${API_URL}?action=getProducts`),
+          new Promise(resolve => setTimeout(resolve, 3000)) // Minimum 3s loading
+        ]);
         const json = await res.json();
         if (json.data && Array.isArray(json.data) && json.data.length > 0) {
           // Merge API products? Or replace? 
