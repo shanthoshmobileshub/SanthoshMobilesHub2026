@@ -27,9 +27,9 @@ const CATEGORIES = [
   "iPads",
   "Tabs",
   "Laptops",
+  "Personalized Computers",
   "Accessories",
   "All Products",
-  "Device Category",
   "Book a Repair",
 ];
 
@@ -273,9 +273,8 @@ Problem: ${repairForm.problem}`;
         <div className="max-w-7xl mx-auto px-4">
           <ul className="flex flex-wrap justify-center gap-x-8 gap-y-2 py-3 text-sm font-medium">
             {CATEGORIES.map((c) => {
-              if (c === "Device Category") return null; // Skip old name if present
               const isRepair = c === "Book a Repair";
-              const label = c === "Device Category" ? "Personalized Computer" : c;
+              const label = c;
 
               if (isRepair) {
                 return (
@@ -387,9 +386,8 @@ Problem: ${repairForm.problem}`;
                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop Categories</h4>
                 <nav className="space-y-1">
                   {CATEGORIES.map(c => {
-                    if (c === "Device Category") return null;
                     const isRepair = c === "Book a Repair";
-                    const label = c === "Device Category" ? "Personalized Computer" : c;
+                    const label = c;
 
                     if (isRepair) {
                       return (

@@ -1,16 +1,25 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 
 export default function Auth() {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const { login } = useAuth();
 
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    // If we've been redirected here with a password to pre-fill (from the magic link)
+    if (state?.prefillPass) {
+      setMode("login");
+      setForm((f) => ({ ...f, password: state.prefillPass }));
+    }
+  }, [state]);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
