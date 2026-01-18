@@ -4,6 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SanthoshMobiles</title>
+    <script>
+      (function(){
+        const redirect = sessionStorage.getItem('redirect');
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
     <link rel="icon" href="/images/Favicon/SMLogo.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/images/Favicon/SMLogo.png" />
     <meta name="theme-color" content="#0f172a" />
