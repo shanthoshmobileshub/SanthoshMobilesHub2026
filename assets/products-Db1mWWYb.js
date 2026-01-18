@@ -1,0 +1,1 @@
+const i=[{id:"1",title:"iPhone 15 Pro Max",brand:"Apple",category:"Mobiles",price:"150000",image:"/images/Mobiles/IPhone 15 Pro Max.png",condition:"New"}];export{i};
