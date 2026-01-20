@@ -176,7 +176,7 @@ Problem: ${repairForm.problem}`;
                       className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-primary/50 flex items-center gap-4 border-b border-gray-200 dark:border-gray-800 last:border-none transition-colors"
                     >
                       <img
-                        src={p.image && p.image.startsWith('http') ? p.image : `${import.meta.env.BASE_URL}${p.image}`}
+                        src={p.image && p.image.startsWith('http') ? p.image : `${import.meta.env.BASE_URL}${p.image && p.image.startsWith('/') ? p.image.slice(1) : p.image}`}
                         alt={p.title}
                         className="w-12 h-12 object-contain bg-white rounded-md p-1 border border-gray-100"
                       />
@@ -235,7 +235,7 @@ Problem: ${repairForm.problem}`;
             </button>
             {/* Admin & Wishlist & Cart buttons ... (Same as original) */}
             <div className="hidden md:flex items-center gap-3">
-              {isAuthenticated ? (
+              {isAuthenticated && (
                 <>
                   <Link to="/admin" className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors" title="Admin Dashboard">
                     <FiUser size={20} />
@@ -244,10 +244,6 @@ Problem: ${repairForm.problem}`;
                     Logout
                   </button>
                 </>
-              ) : (
-                <button onClick={() => setShowAdminLoginModal(true)} className="p-2 text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors" title="Admin Login">
-                  <FiUser size={20} />
-                </button>
               )}
             </div>
 
@@ -379,7 +375,21 @@ Problem: ${repairForm.problem}`;
                   <span className="text-xl font-bold text-slate-900 dark:text-white">Menu</span>
                   <button onClick={() => setShowMobileMenu(false)}><FiX size={24} /></button>
                 </div>
-                {/* ... User/Theme Actions ... */}
+
+                {/* Mobile Theme Toggle */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Appearance</span>
+                  <button onClick={toggleTheme} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-gray-700">
+                    {theme === 'dark' ? <FiMoon size={16} /> : <FiSun size={16} />}
+                    <span className="text-xs font-bold">{theme === 'dark' ? 'Dark' : 'Light'}</span>
+                  </button>
+                </div>
+
+                {/* Mobile Support */}
+                <a href="https://wa.me/919790225832" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400 rounded-xl font-bold text-sm mb-2">
+                  <AiOutlineWhatsApp size={18} />
+                  Support: 97902 25832
+                </a>
               </div>
 
               <div className="flex-1 p-6 overflow-y-auto">

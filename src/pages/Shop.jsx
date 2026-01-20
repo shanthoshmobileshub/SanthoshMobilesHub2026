@@ -45,6 +45,10 @@ export default function Shop() {
 
   const filtered = products.filter((p) => {
     // category filter (exact match, case-insensitive) — if no category, allow all
+    // Also EXCLUDE 'OfferBanner' from general shop listing unless explicitly requested (unlikely)
+    const isOfferBanner = (p.category === "OfferBanner");
+    if (isOfferBanner) return false;
+
     const byCategory = category ? ((p.category || "").toLowerCase() === catLower) : true;
 
     // search filter (if present) — matches title / brand / category

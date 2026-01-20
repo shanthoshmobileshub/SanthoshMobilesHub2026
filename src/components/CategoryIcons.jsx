@@ -6,7 +6,7 @@ const items = [
   { k: 'AirPods', img: 'https://images.unsplash.com/photo-1616596871232-4f06a8f5b7b5?w=400' },
   { k: 'iPads', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400' },
   { k: 'Tabs', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400' },
-  { k: 'Watches', img: 'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=400' },
+  { k: 'Smart Watches', img: 'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?w=400' },
   { k: 'Accessories', img: 'https://images.unsplash.com/photo-1541534401786-8b1f2f6b1d6d?w=400' }
 ]
 

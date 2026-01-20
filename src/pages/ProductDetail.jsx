@@ -56,7 +56,11 @@ export default function ProductDetail() {
 
         {/* Left: Image */}
         <div className="w-full md:w-1/2 bg-white dark:bg-white/5 p-8 rounded-2xl flex items-center justify-center border border-gray-100 dark:border-gray-800">
-          <img src={product.image} alt={product.title} className="max-h-[500px] w-full object-contain drop-shadow-md" />
+          <img
+            src={product.image?.startsWith('http') ? product.image : `${import.meta.env.BASE_URL}${product.image?.startsWith('/') ? product.image.slice(1) : product.image}`}
+            alt={product.title}
+            className="max-h-[500px] w-full object-contain drop-shadow-md"
+          />
         </div>
 
         {/* Right: Details */}

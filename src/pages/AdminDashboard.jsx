@@ -44,7 +44,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (activeTab === "orders") fetchOrders();
-    if (activeTab === "products") fetchProducts();
+    if (activeTab === "products" || activeTab === "posts") fetchProducts();
   }, [activeTab]);
 
   // -------------------------
@@ -63,10 +63,11 @@ export default function AdminDashboard() {
   async function fetchProducts() {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}?action=getProducts`);
+      const action = activeTab === 'posts' ? 'getOffers' : 'getProducts';
+      const res = await fetch(`${API_URL}?action=${action}`);
       const json = await res.json();
       setProducts(Array.isArray(json.data) ? json.data : []);
-    } catch (e) { console.error("Fetch products failed", e); }
+    } catch (e) { console.error("Fetch failed", e); }
     setLoading(false);
   }
 
@@ -155,6 +156,12 @@ export default function AdminDashboard() {
               className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'products' ? 'bg-accent text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'}`}
             >
               Manage Products
+            </button>
+            <button
+              onClick={() => setActiveTab("posts")}
+              className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'posts' ? 'bg-accent text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'}`}
+            >
+              Posts (Offers)
             </button>
           </div>
         </header>
@@ -349,6 +356,129 @@ export default function AdminDashboard() {
                       </button>
                     </div>
                   ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* -------------------- POSTS (OFFERS) TAB -------------------- */}
+        {activeTab === "posts" && (
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* ADD POST FORM */}
+            <div className="bg-white dark:bg-primary-light rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 h-fit sticky top-6">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Add New Offer Banner</h3>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                if (!newProduct.image && !newProduct.imageBase64) return alert("Image URL or Upload required");
+
+                const offerData = {
+                  title: newProduct.title || "Offer Banner",
+                  image: newProduct.image,
+                  imageBase64: newProduct.imageBase64,
+                  mimeType: newProduct.mimeType
+                };
+
+                setActionLoading(true);
+                try {
+                  await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({ action: "addOffer", ...offerData })
+                  });
+                  alert("Offer Posted Successfully!");
+                  setNewProduct({ title: "", brand: "Apple", category: "Mobiles", price: "", image: "", description: "", imageBase64: "", mimeType: "" });
+                  fetchProducts();
+                } catch (err) {
+                  console.error(err);
+                  alert("Failed to post offer.");
+                }
+                setActionLoading(false);
+              }} className="space-y-4">
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Offer Title (Optional)</label>
+                  <input
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    placeholder="e.g. Diwali Sale"
+                    value={newProduct.title}
+                    onChange={e => setNewProduct({ ...newProduct, title: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Banner Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 mb-2"
+                  />
+                  <div className="text-center text-xs text-gray-400 my-1">- OR -</div>
+                  <input
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    placeholder="Image URL"
+                    value={newProduct.image}
+                    onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+                  />
+                </div>
+
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg text-xs text-blue-600 dark:text-blue-300">
+                  Tip: Use landscape images (16:9) for best results.
+                </div>
+
+                <button
+                  disabled={actionLoading}
+                  className="w-full btn-primary py-3 rounded-xl shadow-lg mt-4 disabled:opacity-50"
+                >
+                  {actionLoading ? "Posting..." : "Post Offer"}
+                </button>
+              </form>
+            </div>
+
+            {/* POSTS LIST */}
+            <div className="lg:col-span-2">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Active Offers</h3>
+              {loading ? (
+                <div className="text-center">Loading...</div>
+              ) : (
+                <div className="grid gap-4">
+                  {products.map(p => (
+                    <div key={p.id} className="relative group bg-white dark:bg-primary-light rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                      <img
+                        src={p.image?.startsWith('http') ? p.image : `${import.meta.env.BASE_URL}${p.image?.startsWith('/') ? p.image.slice(1) : p.image}`}
+                        alt={p.title}
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm("Delete this offer?")) return;
+                            setActionLoading(true);
+                            try {
+                              await fetch(API_URL, {
+                                method: "POST",
+                                headers: { "Content-Type": "text/plain" },
+                                body: JSON.stringify({ action: "deleteOffer", id: p.id })
+                              });
+                              fetchProducts(); // Refresh list
+                            } catch (e) { alert("Failed to delete"); }
+                            setActionLoading(false);
+                          }}
+                          disabled={actionLoading}
+                          className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-red-600 transition-colors"
+                        >
+                          Delete Post
+                        </button>
+                      </div>
+                      <div className="p-3">
+                        <div className="font-bold text-slate-900 dark:text-white">{p.title}</div>
+                      </div>
+                    </div>
+                  ))}
+                  {products.length === 0 && (
+                    <div className="text-gray-500 text-center py-10">No active offers. Post one to see it on the Homepage!</div>
+                  )}
                 </div>
               )}
             </div>
