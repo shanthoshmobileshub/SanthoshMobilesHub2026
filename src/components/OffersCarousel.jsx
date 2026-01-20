@@ -33,8 +33,18 @@ export default function OffersCarousel() {
         return () => clearInterval(timer);
     }, [offers.length]);
 
-    if (loading) return null; // Or a skeleton loader
-    if (offers.length === 0) return null; // Hide if no offers
+    if (loading) return <div className="p-4 text-center bg-gray-100 mb-4">Loading Offers...</div>;
+
+    if (offers.length === 0) return (
+        <div className="p-4 text-center bg-red-50 border border-red-200 text-red-600 mb-4 rounded-lg">
+            <strong>Debug:</strong> No offers found.
+            <br />
+            Check:
+            1. Sheet name is "Post Offers" exactly.
+            2. Script Deployment Access is "Anyone".
+            3. You have at least one row in the sheet.
+        </div>
+    );
 
     return (
         <div className="w-full bg-black relative overflow-hidden group">
