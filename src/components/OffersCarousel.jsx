@@ -52,7 +52,7 @@ export default function OffersCarousel() {
                         <img
                             src={offer.image?.startsWith('http') ? offer.image : `${import.meta.env.BASE_URL}${offer.image?.startsWith('/') ? offer.image.slice(1) : offer.image}`}
                             alt={offer.title || "Offer"}
-                            className="w-full h-auto max-h-[600px] object-contain md:object-cover"
+                            className="w-full h-auto object-contain"
                         />
                         {/* Optional Overlay Text if needed, but "Poster" implies image has text */}
                     </div>
