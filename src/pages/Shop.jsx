@@ -4,7 +4,7 @@ import initialProducts from "../data/products.json";
 import ProductCard from "../components/ProductCard";
 
 // Replace with your actual deployment URL
-const API_URL = "https://script.google.com/macros/s/AKfycbyZn3hERrmuATHMoOADARri9ewATpzuJOmJW1xBkksBl2XOHptfeFB18lUQXFa5eQ-xlw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";
 
 export default function Shop() {
   const { search } = useLocation();

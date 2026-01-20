@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const API_URL ='https://script.google.com/macros/s/AKfycbznDdZ59fSqQecC1QZQauoo2Xntebc6gJrhygNOLlb5XSXjPMG6XYTky07adIUSATYuxg/exec'
+const API_URL = 'https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec'
 function readFileAsBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -31,72 +31,72 @@ export default function PaymentConfirm() {
     return <div className="p-4">No checkout data</div>
   }
 
-async function handleSubmit(e) {
-  e.preventDefault();
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-  if (!txId.trim()) return alert('Enter transaction ID');
-  if (!file) return alert('Upload payment screenshot');
+    if (!txId.trim()) return alert('Enter transaction ID');
+    if (!file) return alert('Upload payment screenshot');
 
-  const allowed = ['image/jpeg', 'image/jpg', 'image/png'];
-  if (!allowed.includes(file.type)) {
-    return alert('Only JPG / JPEG / PNG images allowed');
-  }
+    const allowed = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowed.includes(file.type)) {
+      return alert('Only JPG / JPEG / PNG images allowed');
+    }
 
-  if (file.size > 6 * 1024 * 1024) {
-    return alert('Image must be under 6 MB');
-  }
+    if (file.size > 6 * 1024 * 1024) {
+      return alert('Image must be under 6 MB');
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    const base64 = await readFileAsBase64(file);
-
-    const payload = {
-      action: "order",
-      customerName: draft.name,
-      phone: draft.phone,
-      gender: draft.gender,
-      address: draft.address,
-      productName: draft.productName,
-      amount: draft.amount,
-      upiId: draft.upiId,
-      email: draft.email,
-      transactionId: txId,
-      screenshot: base64,
-      screenshotType: file.type
-    };
-
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const text = await res.text();
-
-    let result = {};
     try {
-      result = JSON.parse(text);
-    } catch (jsonError) {
-      alert("Server did not return valid JSON:\n" + text);
-      return;
-    }
+      const base64 = await readFileAsBase64(file);
 
-    if (result.success) {
-      alert("Order uploaded successfully!");
-      sessionStorage.removeItem("checkout_draft");
-      navigate("/");
-    } else {
-      alert(result.error || "Order submission failed");
-    }
+      const payload = {
+        action: "order",
+        customerName: draft.name,
+        phone: draft.phone,
+        gender: draft.gender,
+        address: draft.address,
+        productName: draft.productName,
+        amount: draft.amount,
+        upiId: draft.upiId,
+        email: draft.email,
+        transactionId: txId,
+        screenshot: base64,
+        screenshotType: file.type
+      };
 
-  } 
-  catch (err) {
-    alert("Upload failed — network or script error");
-  } finally {
-    setLoading(false);
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+
+      let result = {};
+      try {
+        result = JSON.parse(text);
+      } catch (jsonError) {
+        alert("Server did not return valid JSON:\n" + text);
+        return;
+      }
+
+      if (result.success) {
+        alert("Order uploaded successfully!");
+        sessionStorage.removeItem("checkout_draft");
+        navigate("/");
+      } else {
+        alert(result.error || "Order submission failed");
+      }
+
+    }
+    catch (err) {
+      alert("Upload failed — network or script error");
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
 
   return (
