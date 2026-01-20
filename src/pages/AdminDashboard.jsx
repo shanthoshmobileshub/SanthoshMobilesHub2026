@@ -4,7 +4,7 @@ const API_URL =
   "https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState("orders");
+  const [activeTab, setActiveTab] = useState("Post Offers");
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (activeTab === "orders") fetchOrders();
-    if (activeTab === "products" || activeTab === "posts") fetchProducts();
+    if (activeTab === "products" || activeTab === "Post Offers") fetchProducts();
   }, [activeTab]);
 
   // -------------------------
@@ -63,7 +63,7 @@ export default function AdminDashboard() {
   async function fetchProducts() {
     setLoading(true);
     try {
-      const action = activeTab === 'posts' ? 'getOffers' : 'getProducts';
+      const action = activeTab === 'Post Offers' ? 'getOffers' : 'getProducts';
       const res = await fetch(`${API_URL}?action=${action}`);
       const json = await res.json();
       setProducts(Array.isArray(json.data) ? json.data : []);
@@ -158,10 +158,10 @@ export default function AdminDashboard() {
               Manage Products
             </button>
             <button
-              onClick={() => setActiveTab("posts")}
-              className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'posts' ? 'bg-accent text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'}`}
+              onClick={() => setActiveTab("Post Offers")}
+              className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'Post Offers' ? 'bg-accent text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'}`}
             >
-              Posts (Offers)
+              Post Offers
             </button>
           </div>
         </header>
@@ -363,7 +363,7 @@ export default function AdminDashboard() {
         )}
 
         {/* -------------------- POSTS (OFFERS) TAB -------------------- */}
-        {activeTab === "posts" && (
+        {activeTab === "Post Offers" && (
           <div className="grid lg:grid-cols-3 gap-8">
             {/* ADD POST FORM */}
             <div className="bg-white dark:bg-primary-light rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 h-fit sticky top-6">

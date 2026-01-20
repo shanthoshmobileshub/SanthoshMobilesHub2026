@@ -32,6 +32,15 @@ module.exports = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'hero-pattern': "url('/images/hero-bg.jpg')", // Placeholder
       },
+      animation: {
+        scroll: 'scroll 10s linear infinite',
+      },
+      keyframes: {
+        scroll: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+      },
       boxShadow: {
         'glow': '0 0 20px rgba(212, 175, 55, 0.3)',
         'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
