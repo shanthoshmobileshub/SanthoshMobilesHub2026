@@ -176,7 +176,10 @@ export default function AdminDashboard() {
     address: "",
     phone: "",
     email: "",
-    copyright: ""
+    copyright: "",
+    shopLinks: "Mobiles,Tabs,iPads,Laptops,Personalized Computers,Smart Watches,AirPods,Accessories",
+    serviceLinks: "Sell a Phone,Book a Repair,Device Diagnostics,Data Recovery",
+    quickLinks: "About Us,Why SanthoshMobiles,Terms & Conditions,Privacy Policy"
   });
 
   useEffect(() => {
@@ -729,6 +732,39 @@ export default function AdminDashboard() {
                     value={footerData.copyright}
                     onChange={e => setFooterData({ ...footerData, copyright: e.target.value })}
                     placeholder="e.g. 2026 Santhosh Mobiles"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Shop Collection Links (Comma Separated)</label>
+                  <textarea
+                    rows="2"
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    value={footerData.shopLinks}
+                    onChange={e => setFooterData({ ...footerData, shopLinks: e.target.value })}
+                    placeholder="Mobiles, Tabs, etc."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Our Services Links (Comma Separated)</label>
+                  <textarea
+                    rows="2"
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    value={footerData.serviceLinks}
+                    onChange={e => setFooterData({ ...footerData, serviceLinks: e.target.value })}
+                    placeholder="Sell a Phone, Book a Repair, etc."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quick Links (Comma Separated)</label>
+                  <textarea
+                    rows="2"
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    value={footerData.quickLinks}
+                    onChange={e => setFooterData({ ...footerData, quickLinks: e.target.value })}
+                    placeholder="About Us, Terms, etc."
                   />
                 </div>
 

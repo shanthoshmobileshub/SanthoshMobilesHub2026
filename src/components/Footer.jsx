@@ -10,10 +10,11 @@ export default function Footer() {
     address: "Collector Office, Tiruppur - 641 604.",
     phone: "+91 97902 25832",
     email: "contact@shanthoshmobiles.com",
-    copyright: "2026 Santhosh Mobiles"
+    copyright: "2026 Santhosh Mobiles",
+    shopLinks: "Mobiles,Tabs,iPads,Laptops,Personalized Computers,Smart Watches,AirPods,Accessories",
+    serviceLinks: "Sell a Phone,Book a Repair,Device Diagnostics,Data Recovery",
+    quickLinks: "About Us,Why SanthoshMobiles,Terms & Conditions,Privacy Policy"
   });
-
-  const shopItems = ['Mobiles', 'Tabs', 'iPads', 'Laptops', 'Personalized Computers', 'Smart Watches', 'AirPods', 'Accessories'];
 
   useEffect(() => {
     // 1. Load from cache
@@ -76,7 +77,7 @@ export default function Footer() {
         <div>
           <h4 className="font-heading font-bold text-lg text-white mb-6">Shop Collection</h4>
           <ul className="space-y-3 text-sm">
-            {shopItems.map(item => (
+            {data.shopLinks?.split(',').map(item => item.trim()).map(item => (
               <li key={item}>
                 <Link to={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-accent transition-colors flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-gray-500 rounded-full group-hover:bg-accent transition-colors"></span>
@@ -90,12 +91,12 @@ export default function Footer() {
         <div>
           <h4 className="font-heading font-bold text-lg text-white mb-6">Our Services</h4>
           <ul className="space-y-3 text-sm">
-            {['Sell a Phone', 'Book a Repair', 'Device Diagnostics', 'Data Recovery'].map(item => (
+            {data.serviceLinks?.split(',').map(item => item.trim()).map(item => (
               <li key={item}>
-                <a href="#" className="hover:text-accent transition-colors flex items-center gap-2 group">
+                <Link to="#" className="hover:text-accent transition-colors flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-gray-500 rounded-full group-hover:bg-accent transition-colors"></span>
                   {item}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -104,12 +105,12 @@ export default function Footer() {
         <div>
           <h4 className="font-heading font-bold text-lg text-white mb-6">Quick Links</h4>
           <ul className="space-y-3 text-sm">
-            {['About Us', 'Why SanthoshMobiles', 'Terms & Conditions', 'Privacy Policy'].map(item => (
+            {data.quickLinks?.split(',').map(item => item.trim()).map(item => (
               <li key={item}>
-                <a href="#" className="hover:text-accent transition-colors flex items-center gap-2 group">
+                <Link to="#" className="hover:text-accent transition-colors flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-gray-500 rounded-full group-hover:bg-accent transition-colors"></span>
                   {item}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
