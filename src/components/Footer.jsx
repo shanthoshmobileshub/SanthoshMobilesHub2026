@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";
 const CACHE_KEY = "smh_footer_data";
@@ -11,6 +12,8 @@ export default function Footer() {
     email: "contact@shanthoshmobiles.com",
     copyright: "2026 Santhosh Mobiles"
   });
+
+  const shopItems = ['Mobiles', 'Tabs', 'iPads', 'Laptops', 'Personalized Computers', 'Smart Watches', 'AirPods', 'Accessories'];
 
   useEffect(() => {
     // 1. Load from cache
@@ -73,12 +76,12 @@ export default function Footer() {
         <div>
           <h4 className="font-heading font-bold text-lg text-white mb-6">Shop Collection</h4>
           <ul className="space-y-3 text-sm">
-            {['Mobiles', 'Tablets', 'Laptops', 'Smart Watches', 'Accessories'].map(item => (
+            {shopItems.map(item => (
               <li key={item}>
-                <a href={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-accent transition-colors flex items-center gap-2 group">
+                <Link to={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-accent transition-colors flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-gray-500 rounded-full group-hover:bg-accent transition-colors"></span>
                   {item}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
