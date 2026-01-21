@@ -14,7 +14,9 @@ export default function MobileActionModal({ isOpen, onClose, type }) {
         model: '',
         ram: '',
         storage: '',
-        yearsUsed: '',
+        usedYears: '',
+        usedMonths: '',
+        usedDays: '',
         warranty: 'No',
         expectedPrice: '', // For Sell
         exchangeTarget: '' // For Exchange
@@ -27,6 +29,14 @@ export default function MobileActionModal({ isOpen, onClose, type }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // Construct the "Used Duration" string
+        const years = formData.usedYears ? `${formData.usedYears} Years` : '';
+        const months = formData.usedMonths ? `${formData.usedMonths} Months` : '';
+        const days = formData.usedDays ? `${formData.usedDays} Days` : '';
+
+        // Filter out empty parts and join with commas
+        const usedDuration = [years, months, days].filter(Boolean).join(', ') || 'glancing new';
+
         let message = "";
         if (isSell) {
             message = `*Hello Santhosh Mobiles, I want to SELL my mobile.*\n\n` +
@@ -35,7 +45,7 @@ export default function MobileActionModal({ isOpen, onClose, type }) {
                 `Model: ${formData.model}\n` +
                 `RAM: ${formData.ram}\n` +
                 `Storage: ${formData.storage}\n` +
-                `used: ${formData.yearsUsed}\n` +
+                `Used: ${usedDuration}\n` +
                 `Warranty: ${formData.warranty}\n` +
                 `Expected Price: ₹${formData.expectedPrice}\n`;
         } else {
@@ -45,7 +55,7 @@ export default function MobileActionModal({ isOpen, onClose, type }) {
                 `Model: ${formData.model}\n` +
                 `RAM: ${formData.ram}\n` +
                 `Storage: ${formData.storage}\n` +
-                `used: ${formData.yearsUsed}\n` +
+                `Used: ${usedDuration}\n` +
                 `Warranty: ${formData.warranty}\n\n` +
                 `*I want to Exchange with:*\n` +
                 `${formData.exchangeTarget}\n`;
@@ -119,18 +129,31 @@ export default function MobileActionModal({ isOpen, onClose, type }) {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Years Used</label>
-                            <input type="text" name="yearsUsed" required placeholder="e.g. 1.5 Years" onChange={handleChange} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-slate-800 focus:ring-2 focus:ring-accent p-2 text-sm" />
+                    {/* NEW: Split Used Duration Fields */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duration Used</label>
+                        <div className="grid grid-cols-3 gap-2">
+                            <div className="relative">
+                                <input type="number" name="usedYears" placeholder="0" min="0" onChange={handleChange} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-slate-800 focus:ring-2 focus:ring-accent p-2 text-sm" />
+                                <span className="absolute right-2 top-2 text-xs text-gray-400">Yrs</span>
+                            </div>
+                            <div className="relative">
+                                <input type="number" name="usedMonths" placeholder="0" min="0" max="11" onChange={handleChange} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-slate-800 focus:ring-2 focus:ring-accent p-2 text-sm" />
+                                <span className="absolute right-2 top-2 text-xs text-gray-400">Mos</span>
+                            </div>
+                            <div className="relative">
+                                <input type="number" name="usedDays" placeholder="0" min="0" max="31" onChange={handleChange} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-slate-800 focus:ring-2 focus:ring-accent p-2 text-sm" />
+                                <span className="absolute right-2 top-2 text-xs text-gray-400">Days</span>
+                            </div>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Warranty Available?</label>
-                            <select name="warranty" onChange={handleChange} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-slate-800 focus:ring-2 focus:ring-accent p-2 text-sm">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Warranty Available?</label>
+                        <select name="warranty" onChange={handleChange} className="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-slate-800 focus:ring-2 focus:ring-accent p-2 text-sm">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
                     </div>
 
                     {isSell && (
