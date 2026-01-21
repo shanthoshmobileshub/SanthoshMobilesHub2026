@@ -8,13 +8,14 @@ After pasting, click **Deploy** -> **New Deployment** -> Select type **Web app**
 
 ```javascript
 /* --------------------------------------------------------------------------------
-   SHANTHOSH MOBILES HUB - BACKEND SCRIPT (PRODUCTS, OFFERS, ORDERS)
+   SHANTHOSH MOBILES HUB - BACKEND SCRIPT (PRODUCTS, OFFERS, ORDERS, CATEGORIES)
    -------------------------------------------------------------------------------- */
 
 var SPREADSHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
 var SHEET_NAME_PRODUCTS = "Products";
 var SHEET_NAME_OFFERS = "Post Offers";
 var SHEET_NAME_ORDERS = "Orders";
+var SHEET_NAME_CATEGORIES = "Categories";
 
 // FOLDER ID for saving images (Optional: Set this if you want a specific folder)
 // Otherwise loops to find or create "Product Images"
@@ -30,6 +31,8 @@ function doGet(e) {
     return getOffers();
   } else if (action == "getOrders") {
     return getOrders();
+  } else if (action == "getCategories") {
+    return getCategories();
   }
 
   return ContentService.createTextOutput("Invalid Action: " + action);
@@ -50,6 +53,10 @@ function doPost(e) {
       return deleteOffer(data.id);
     } else if (action == "updateOrder") {
       return updateOrder(data);
+    } else if (action == "addCategory") {
+      return addCategory(data);
+    } else if (action == "deleteCategory") {
+      return deleteCategory(data.id);
     }
     
     return responseJSON({ success: false, message: "Unknown action" });
@@ -103,6 +110,26 @@ function getOffers() {
   }).filter(function(o) { return o.image && o.image != ""; });
 
   return responseJSON({ data: offers });
+}
+
+function getCategories() {
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME_CATEGORIES);
+  if (!sheet) return responseJSON({ data: [], message: "Sheet not found" });
+
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return responseJSON({ data: [] });
+
+  var headers = data.shift();
+  // Columns: ID, Name, Link, Image
+  var cats = data.map(function(row) {
+    return {
+      id: row[0],
+      name: row[1],
+      link: row[2],
+      image: row[3]
+    };
+  });
+  return responseJSON({ data: cats });
 }
 
 function getOrders() {
@@ -172,6 +199,31 @@ function addOffer(data) {
 
 function deleteOffer(id) {
   return deleteRowById(SHEET_NAME_OFFERS, 0, id); // ID is Col 0
+}
+
+function addCategory(data) {
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME_CATEGORIES);
+  if (!sheet) {
+    sheet = SpreadsheetApp.openById(SPREADSHEET_ID).insertSheet(SHEET_NAME_CATEGORIES);
+    sheet.appendRow(["CAT ID", "Name", "Link", "Image URL"]);
+  }
+
+  var id = "CAT" + ("000" + sheet.getLastRow()).slice(-3);
+  
+  var imageUrl = data.image;
+  if (data.imageBase64) {
+    imageUrl = uploadImageToDrive(data.imageBase64, data.mimeType, "Cat_" + data.name);
+  }
+
+  var link = data.link || ("/shop?category=" + encodeURIComponent(data.name));
+
+  var row = [id, data.name, link, imageUrl];
+  sheet.appendRow(row);
+  return responseJSON({ success: true, id: id });
+}
+
+function deleteCategory(id) {
+  return deleteRowById(SHEET_NAME_CATEGORIES, 0, id);
 }
 
 function updateOrder(data) {

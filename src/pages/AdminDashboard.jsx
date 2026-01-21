@@ -39,10 +39,14 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
+  /* Update fetchProducts to include categories */
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const action = activeTab === "posts" ? "getOffers" : "getProducts";
+      let action = "getProducts";
+      if (activeTab === "posts") action = "getOffers";
+      if (activeTab === "categories") action = "getCategories";
+
       const res = await fetch(`${API_URL}?action=${action}`);
       const json = await res.json();
       if (json.data && Array.isArray(json.data)) {
@@ -54,6 +58,51 @@ export default function AdminDashboard() {
       console.error(err);
     }
     setLoading(false);
+  };
+
+  /* Add Category Handler */
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    if (!newProduct.title) return alert("Category Name is required");
+
+    setActionLoading(true);
+    try {
+      const catData = {
+        name: newProduct.title,
+        link: newProduct.description, // Reusing description field for Link
+        image: newProduct.image,
+        imageBase64: newProduct.imageBase64,
+        mimeType: newProduct.mimeType
+      };
+
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ action: "addCategory", ...catData })
+      });
+      alert("Category Added!");
+      setNewProduct({ title: "", brand: "Apple", category: "Mobiles", price: "", image: "", description: "", imageBase64: "", mimeType: "" });
+      fetchProducts();
+    } catch (err) {
+      alert("Failed to add category");
+    }
+    setActionLoading(false);
+  };
+
+  const handleDeleteCategory = async (id) => {
+    if (!window.confirm("Delete this category?")) return;
+    setActionLoading(true);
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ action: "deleteCategory", id })
+      });
+      fetchProducts();
+    } catch (err) {
+      alert("Failed to delete");
+    }
+    setActionLoading(false);
   };
 
   const handleFileChange = (e) => {
@@ -141,6 +190,12 @@ export default function AdminDashboard() {
             className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'posts' ? 'bg-accent text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'}`}
           >
             Post Offers
+          </button>
+          <button
+            onClick={() => setActiveTab("categories")}
+            className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'categories' ? 'bg-accent text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'}`}
+          >
+            Categories
           </button>
         </div>
 
@@ -445,6 +500,101 @@ export default function AdminDashboard() {
                   ))}
                   {products.length === 0 && (
                     <div className="text-gray-500 text-center py-10">No active offers. Post one to see it on the Homepage!</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* -------------------- CATEGORIES TAB -------------------- */}
+        {activeTab === "categories" && (
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* ADD CATEGORY FORM */}
+            <div className="bg-white dark:bg-primary-light rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 h-fit sticky top-6">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Add New Category</h3>
+              <form onSubmit={handleAddCategory} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category Name</label>
+                  <input
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    placeholder="e.g. Headphones"
+                    value={newProduct.title}
+                    onChange={e => setNewProduct({ ...newProduct, title: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Navigation Link (Optional)</label>
+                  <input
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    placeholder="e.g. /shop?category=Headphones"
+                    value={newProduct.description}
+                    onChange={e => setNewProduct({ ...newProduct, description: e.target.value })}
+                  />
+                  <div className="text-xs text-gray-400 mt-1">Leave empty to auto-generate based on name</div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 mb-2"
+                  />
+                  <div className="text-center text-xs text-gray-400 my-1">- OR -</div>
+                  <input
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    placeholder="Image URL"
+                    value={newProduct.image}
+                    onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+                  />
+                </div>
+
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg text-xs text-blue-600 dark:text-blue-300">
+                  Tip: Use circular or square images (1:1) for best results.
+                </div>
+
+                <button
+                  disabled={actionLoading}
+                  className="w-full btn-primary py-3 rounded-xl shadow-lg mt-4 disabled:opacity-50"
+                >
+                  {actionLoading ? "Adding..." : "Add Category"}
+                </button>
+              </form>
+            </div>
+
+            {/* CATEGORY LIST */}
+            <div className="lg:col-span-2">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Active Categories</h3>
+              {loading ? (
+                <div className="text-center">Loading...</div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {products.map(c => (
+                    <div key={c.id} className="relative group bg-white dark:bg-primary-light rounded-xl border border-gray-200 dark:border-gray-700 p-4 flex flex-col items-center text-center">
+                      <div className="w-20 h-20 rounded-full overflow-hidden mb-3 border-2 border-gray-100 dark:border-gray-600">
+                        <img
+                          src={c.image?.startsWith('http') ? c.image : `${import.meta.env.BASE_URL}${c.image?.startsWith('/') ? c.image.slice(1) : c.image}`}
+                          alt={c.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="font-bold text-slate-900 dark:text-white mb-1">{c.name}</div>
+                      <div className="text-xs text-gray-400 truncate w-full px-2">{c.link}</div>
+
+                      <button
+                        onClick={() => handleDeleteCategory(c.id)}
+                        disabled={actionLoading}
+                        className="mt-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 px-3 py-1 rounded-lg text-sm transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                  {products.length === 0 && (
+                    <div className="col-span-full text-gray-500 text-center py-10">No categories found. Add one to customize the homepage!</div>
                   )}
                 </div>
               )}
