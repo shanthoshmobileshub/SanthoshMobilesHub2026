@@ -1,6 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+
+const API_URL = "https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";
+const CACHE_KEY = "smh_footer_data";
 
 export default function Footer() {
+  const [data, setData] = useState({
+    description: "Your premium destination for the latest smartphones, accessories, and expert repairs. Experience luxury service.",
+    address: "Collector Office, Tiruppur - 641 604.",
+    phone: "+91 97902 25832",
+    email: "contact@shanthoshmobiles.com",
+    copyright: "2026 Santhosh Mobiles"
+  });
+
+  useEffect(() => {
+    // 1. Load from cache
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        setData(JSON.parse(cached));
+      } catch (e) { console.error(e) }
+    }
+
+    // 2. Fetch fresh data
+    fetch(`${API_URL}?action=getFooter`)
+      .then(res => res.json())
+      .then(json => {
+        if (json.data && Array.isArray(json.data)) {
+          const newData = { ...data };
+          // Override defaults with fetched data
+          json.data.forEach(item => {
+            // Only update if value is not empty? Or allow clearing?
+            // Allow clearing by accepting empty strings.
+            newData[item.key] = item.value;
+          });
+
+          setData(newData);
+          localStorage.setItem(CACHE_KEY, JSON.stringify(newData));
+        }
+      })
+      .catch(err => console.error("Failed to fetch footer", err));
+  }, []);
+
   return (
     <footer className="bg-primary-dark border-t border-gray-800 text-gray-300 mt-auto relative overflow-hidden">
       {/* DECORATIVE GRADIENT */}
@@ -12,20 +52,20 @@ export default function Footer() {
             Santhosh <span className="text-accent">Mobiles</span>
           </h4>
           <p className="text-sm leading-relaxed text-gray-400 mb-6">
-            Your premium destination for the latest smartphones, accessories, and expert repairs. Experience luxury service.
+            {data.description}
           </p>
           <div className="space-y-2 text-sm text-gray-400">
             <div className="flex items-start gap-3">
               <span className="text-accent font-bold">A.</span>
-              <span>Collector Office, Tiruppur - 641 604.</span>
+              <span>{data.address}</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-accent font-bold">P.</span>
-              <span>+91 97902 25832</span>
+              <span>{data.phone}</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-accent font-bold">E.</span>
-              <span>contact@shanthoshmobiles.com</span>
+              <span>{data.email}</span>
             </div>
           </div>
         </div>
@@ -35,7 +75,7 @@ export default function Footer() {
           <ul className="space-y-3 text-sm">
             {['Mobiles', 'Tablets', 'Laptops', 'Smart Watches', 'Accessories'].map(item => (
               <li key={item}>
-                <a href="#" className="hover:text-accent transition-colors flex items-center gap-2 group">
+                <a href={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-accent transition-colors flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-gray-500 rounded-full group-hover:bg-accent transition-colors"></span>
                   {item}
                 </a>
@@ -74,7 +114,7 @@ export default function Footer() {
       </div>
 
       <div className="bg-black/20 border-t border-gray-800 text-center py-6 text-sm text-gray-500">
-        © 2026 Santhosh Mobiles – Innovation in Every Device.
+        © {data.copyright} – Innovation in Every Device.
       </div>
     </footer>
   )

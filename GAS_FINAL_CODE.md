@@ -16,6 +16,7 @@ var SHEET_NAME_PRODUCTS = "Products";
 var SHEET_NAME_OFFERS = "Post Offers";
 var SHEET_NAME_ORDERS = "Orders";
 var SHEET_NAME_CATEGORIES = "Categories";
+var SHEET_NAME_FOOTER = "Footer";
 
 // FOLDER ID for saving images (Optional: Set this if you want a specific folder)
 // Otherwise loops to find or create "Product Images"
@@ -33,6 +34,8 @@ function doGet(e) {
     return getOrders();
   } else if (action == "getCategories") {
     return getCategories();
+  } else if (action == "getFooter") {
+    return getFooter();
   }
 
   return ContentService.createTextOutput("Invalid Action: " + action);
@@ -57,6 +60,8 @@ function doPost(e) {
       return addCategory(data);
     } else if (action == "deleteCategory") {
       return deleteCategory(data.id);
+    } else if (action == "saveFooter") {
+      return saveFooter(data);
     }
     
     return responseJSON({ success: false, message: "Unknown action" });
@@ -65,6 +70,57 @@ function doPost(e) {
     return responseJSON({ success: false, error: error.toString() });
   }
 }
+
+/* -------------------- GET FUNCTIONS -------------------- */
+// ... (getProducts, getOffers, getCategories, getOrders ... no changes)
+
+function getFooter() {
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME_FOOTER);
+  if (!sheet) return responseJSON({ data: [] });
+  
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return responseJSON({ data: [] });
+  
+  // Return Key-Value pairs
+  // Col 0: Key, Col 1: Value
+  data.shift(); // Remove header
+  var items = data.map(function(row) {
+    return { key: row[0], value: row[1] }; 
+  });
+  
+  return responseJSON({ data: items });
+}
+
+/* -------------------- ADD/DELETE FUNCTIONS -------------------- */
+
+// ... (existing functions)
+
+function saveFooter(data) {
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME_FOOTER);
+  if (!sheet) {
+    sheet = SpreadsheetApp.openById(SPREADSHEET_ID).insertSheet(SHEET_NAME_FOOTER);
+    sheet.appendRow(["Key", "Value"]);
+  }
+  
+  // Clear existing content (except headers? actually easier to clear all and rewrite)
+  // But safest is to clearRange starting row 2.
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, 2).clearContent();
+  }
+
+  // Expecting data.items to be [{key: '...', value: '...'}, ...]
+  var rows = data.items.map(function(item) {
+    return [item.key, item.value];
+  });
+  
+  if (rows.length > 0) {
+    sheet.getRange(2, 1, rows.length, 2).setValues(rows);
+  }
+  
+  return responseJSON({ success: true });
+}
+
 
 /* -------------------- GET FUNCTIONS -------------------- */
 

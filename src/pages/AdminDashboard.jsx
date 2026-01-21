@@ -169,10 +169,74 @@ export default function AdminDashboard() {
     setActionLoading(false);
   };
 
+
+  /* Footer State */
+  const [footerData, setFooterData] = useState({
+    description: "",
+    address: "",
+    phone: "",
+    email: "",
+    copyright: ""
+  });
+
+  useEffect(() => {
+    if (activeTab === "orders") fetchOrders();
+    if (activeTab === "products" || activeTab === "posts" || activeTab === "categories") fetchProducts();
+    if (activeTab === "footer") fetchFooter();
+  }, [activeTab]);
+
+  /* Fetch Footer */
+  const fetchFooter = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}?action=getFooter`);
+      const json = await res.json();
+      if (json.data && Array.isArray(json.data)) {
+        // Convert Array [{key, value}] to Object
+        const newFooter = { ...footerData };
+        json.data.forEach(item => {
+          if (newFooter.hasOwnProperty(item.key)) {
+            newFooter[item.key] = item.value;
+          }
+        });
+        setFooterData(newFooter);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  };
+
+  /* Save Footer */
+  const handleSaveFooter = async (e) => {
+    e.preventDefault();
+    setActionLoading(true);
+    try {
+      // Convert Object to Array
+      const items = Object.keys(footerData).map(key => ({
+        key: key,
+        value: footerData[key]
+      }));
+
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ action: "saveFooter", items: items })
+      });
+      alert("Footer Updated Successfully!");
+    } catch (err) {
+      alert("Failed to update footer");
+    }
+    setActionLoading(false);
+  };
+
+  // ... (rest of functions) ...
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-primary-dark p-4 md:p-8 pt-24">
       <div className="max-w-7xl mx-auto">
         <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
+          {/* existing tabs */}
           <button
             onClick={() => setActiveTab("orders")}
             className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'orders' ? 'bg-accent text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'}`}
@@ -197,9 +261,15 @@ export default function AdminDashboard() {
           >
             Categories
           </button>
+          <button
+            onClick={() => setActiveTab("footer")}
+            className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'footer' ? 'bg-accent text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'}`}
+          >
+            Footer Details
+          </button>
         </div>
 
-        {/* -------------------- ORDERS TAB -------------------- */}
+        {/* ... (Orders, Products, Posts, Categories Tabs) ... */}
         {activeTab === "orders" && (
           <div className="bg-white dark:bg-primary-light rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
             {loading ? (
@@ -257,13 +327,13 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* -------------------- PRODUCTS TAB -------------------- */}
-        {activeTab === "products" && (
+        {activeTab === "products" && (/* ... abbreviated ... check target content match */
           <div className="grid lg:grid-cols-3 gap-8">
             {/* ADD PRODUCT FORM */}
             <div className="bg-white dark:bg-primary-light rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 h-fit sticky top-6">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Add New Product</h3>
               <form onSubmit={handleAddProduct} className="space-y-4">
+                {/* ... inputs ... */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Title</label>
                   <input
@@ -273,6 +343,8 @@ export default function AdminDashboard() {
                     onChange={e => setNewProduct({ ...newProduct, title: e.target.value })}
                   />
                 </div>
+                {/* ... other product inputs ... */}
+                {/* Simplified for matching, assuming standard content */}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -384,10 +456,8 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* -------------------- POSTS (OFFERS) TAB -------------------- */}
-        {activeTab === "posts" && (
+        {activeTab === "posts" && (/* ... posts content ... */
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* ADD POST FORM */}
             <div className="bg-white dark:bg-primary-light rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 h-fit sticky top-6">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Add New Offer Banner</h3>
               <form onSubmit={async (e) => {
@@ -418,6 +488,7 @@ export default function AdminDashboard() {
                 setActionLoading(false);
               }} className="space-y-4">
 
+                {/* Offer Inputs */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Offer Title (Optional)</label>
                   <input
@@ -457,8 +528,7 @@ export default function AdminDashboard() {
                 </button>
               </form>
             </div>
-
-            {/* POSTS LIST */}
+            {/* ... Posts list ... */}
             <div className="lg:col-span-2">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Active Offers</h3>
               {loading ? (
@@ -507,13 +577,13 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* -------------------- CATEGORIES TAB -------------------- */}
+        {/* ... Categories Tab ... */}
         {activeTab === "categories" && (
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* ADD CATEGORY FORM */}
             <div className="bg-white dark:bg-primary-light rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 h-fit sticky top-6">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Add New Category</h3>
               <form onSubmit={handleAddCategory} className="space-y-4">
+                {/* Category Inputs we just made */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category Name</label>
                   <input
@@ -565,7 +635,6 @@ export default function AdminDashboard() {
               </form>
             </div>
 
-            {/* CATEGORY LIST */}
             <div className="lg:col-span-2">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Active Categories</h3>
               {loading ? (
@@ -599,6 +668,80 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* -------------------- FOOTER DETAILS TAB -------------------- */}
+        {activeTab === "footer" && (
+          <div className="max-w-2xl mx-auto bg-white dark:bg-primary-light rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-8">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Edit Footer Details</h3>
+            {loading ? (
+              <div className="text-center p-8">Loading Footer Data...</div>
+            ) : (
+              <form onSubmit={handleSaveFooter} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company Description</label>
+                  <textarea
+                    rows="3"
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    value={footerData.description}
+                    onChange={e => setFooterData({ ...footerData, description: e.target.value })}
+                    placeholder="Short description about your company..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
+                  <textarea
+                    rows="2"
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    value={footerData.address}
+                    onChange={e => setFooterData({ ...footerData, address: e.target.value })}
+                    placeholder="e.g. 15, Collector Office, Tiruppur"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
+                    <input
+                      className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                      value={footerData.phone}
+                      onChange={e => setFooterData({ ...footerData, phone: e.target.value })}
+                      placeholder="e.g. +91 97902 25832"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                    <input
+                      className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                      value={footerData.email}
+                      onChange={e => setFooterData({ ...footerData, email: e.target.value })}
+                      placeholder="contact@example.com"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Copyright Text</label>
+                  <input
+                    className="w-full bg-gray-50 dark:bg-primary-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 outline-none focus:border-accent"
+                    value={footerData.copyright}
+                    onChange={e => setFooterData({ ...footerData, copyright: e.target.value })}
+                    placeholder="e.g. 2026 Santhosh Mobiles"
+                  />
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    disabled={actionLoading}
+                    className="w-full btn-primary py-3 rounded-xl shadow-lg disabled:opacity-50"
+                  >
+                    {actionLoading ? "Saving..." : "Save Footer Details"}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         )}
       </div>
