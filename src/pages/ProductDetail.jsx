@@ -8,13 +8,29 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Na
 
 export default function ProductDetail() {
   const { id } = useParams()
-  const { addToCart } = useCart()
+  const { addToCart, cart } = useCart()
 
   // Try to find in local JSON first
   const [product, setProduct] = useState(() => {
     return initialProducts.find(p => String(p.id) === id) || null;
   });
   const [loading, setLoading] = useState(!product);
+
+  const isInCart = product && cart && cart.some(i => i.id === product.id);
+
+  const handleCartAction = () => {
+    if (isInCart) {
+      // Buy Now -> WhatsApp
+      const message = `*Hello Santhosh Mobiles, I want to Buy this Product:*\n\n` +
+        `*${product.title}*\n` +
+        `Brand: ${product.brand}\n` +
+        `Price: ₹${product.price}\n`;
+      const url = `https://wa.me/919790225832?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    } else {
+      addToCart(product);
+    }
+  };
 
   useEffect(() => {
     // If not found in local JSON, fetch from API
@@ -86,10 +102,10 @@ export default function ProductDetail() {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={() => addToCart(product)}
-              className="flex-1 bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-accent/30 transition-all transform hover:-translate-y-1 active:translate-y-0"
+              onClick={handleCartAction}
+              className={`flex-1 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-accent/30 transition-all transform hover:-translate-y-1 active:translate-y-0 ${isInCart ? 'bg-green-600 hover:bg-green-700' : 'bg-accent hover:bg-accent/90'}`}
             >
-              Add to Cart
+              {isInCart ? "Buy Now on WhatsApp" : "Add to Cart"}
             </button>
             <button
               className="flex-1 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-white/5 transition-all"

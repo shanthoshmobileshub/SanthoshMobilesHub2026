@@ -15,10 +15,26 @@ const ProductCard = ({ product }) => {
 
   const { id, title, brand, price, image } = product;
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart();
   const { items: wishlistItems, toggle: toggleWishlist } = useWishlist();
 
   const inWishlist = wishlistItems.find(i => i.id === id);
+  const isInCart = cart && cart.some(i => i.id === id);
+
+  const handleCartAction = (e) => {
+    e.stopPropagation();
+    if (isInCart) {
+      // Buy Now -> WhatsApp
+      const message = `*Hello Santhosh Mobiles, I want to Buy this Product:*\n\n` +
+        `*${title}*\n` +
+        `Brand: ${brand}\n` +
+        `Price: ₹${price}\n`;
+      const url = `https://wa.me/919790225832?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    } else {
+      addToCart(product);
+    }
+  };
 
   return (
     <div className="group w-64 bg-white dark:bg-primary-light/50 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden hover:shadow-glow hover:-translate-y-2 transition-all duration-300 relative backdrop-blur-sm">
@@ -46,10 +62,14 @@ const ProductCard = ({ product }) => {
 
       <div className="px-4 pb-5 flex items-center justify-between gap-3 relative z-10 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
         <button
-          onClick={() => addToCart(product)}
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-accent to-accent-hover text-primary-dark font-bold rounded-lg text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all"
+          onClick={handleCartAction}
+          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 font-bold rounded-lg text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all ${isInCart ? 'bg-green-500 text-white' : 'bg-gradient-to-r from-accent to-accent-hover text-primary-dark'}`}
         >
-          <FiShoppingCart /> Add
+          {isInCart ? (
+            <>Buy Now</>
+          ) : (
+            <><FiShoppingCart /> Add</>
+          )}
         </button>
 
         <button
