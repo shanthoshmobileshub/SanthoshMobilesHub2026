@@ -11,7 +11,7 @@ const CartPage = lazy(() => import("./pages/CartPage"));
 const Checkout = lazy(() => import("./components/Checkout"));
 const PaymentConfirm = lazy(() => import("./components/PaymentConfirm"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const AdminMagicLogin = lazy(() => import("./pages/AdminMagicLogin"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 
 import { WishlistProvider } from "./context/WishlistContext";
 import { CartProvider } from "./context/CartContext";
@@ -47,7 +47,7 @@ function AppContent() {
               </ProtectedAdminRoute>
             }
           />
-          <Route path="/adminSMH2026" element={<AdminMagicLogin />} />
+          <Route path="/adminSMH2026" element={<AdminLogin />} />
         </Routes>
       </Suspense>
     </div>
