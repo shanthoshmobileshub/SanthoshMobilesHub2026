@@ -2,31 +2,74 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 
+
 const API_URL = "https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";
+const CACHE_KEY = "smh_categories_data";
 
 export default function CategoryIcons() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 1. Try to load from cache
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed)) {
+          setItems(parsed);
+          // If we have cache, we are not "loading" in the blocking sense, 
+          // but we still fetch to update.
+          setLoading(false);
+        }
+      } catch (e) {
+        console.error("Cache parse error", e);
+      }
+    }
+
+    // 2. Fetch fresh data
     fetch(`${API_URL}?action=getCategories`)
       .then(res => res.json())
       .then(json => {
-        if (json.data && Array.isArray(json.data) && json.data.length > 0) {
-          // Map API data to component format
-          // API returns { id, name, link, image }
-          // Component expects { k (name), img (url/path), link (optional) }
+        if (json.data && Array.isArray(json.data)) {
+          // Map API data
           const mapped = json.data.map(c => ({
             k: c.name,
             img: c.image,
             link: c.link
           }));
+
           setItems(mapped);
+          localStorage.setItem(CACHE_KEY, JSON.stringify(mapped));
         } else {
-          setItems([]); // Ensure strictly empty if no data matches
+          // If expressly empty, clear? 
+          if (json.data) {
+            setItems([]);
+            localStorage.removeItem(CACHE_KEY);
+          }
         }
       })
-      .catch(err => console.error("Failed to fetch categories", err));
+      .catch(err => console.error("Failed to fetch categories", err))
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading && items.length === 0) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        <div className="h-8 w-48 bg-gray-200 dark:bg-gray-800 rounded mb-6 animate-pulse"></div>
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="flex flex-col items-center animate-pulse">
+              <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-800 mb-3"></div>
+              <div className="h-4 w-16 bg-gray-200 dark:bg-gray-800 rounded"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (items.length === 0) return null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">

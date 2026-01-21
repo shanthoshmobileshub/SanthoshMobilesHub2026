@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+
 const API_URL = "https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";
+const CACHE_KEY = "smh_offers_data";
 
 export default function OffersCarousel() {
     const [offers, setOffers] = useState([]);
@@ -9,12 +11,26 @@ export default function OffersCarousel() {
     const [index, setIndex] = useState(0);
 
     useEffect(() => {
+        // 1. Check Cache
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setOffers(parsed);
+                    setLoading(false);
+                }
+            } catch (e) { console.error(e); }
+        }
+
         async function fetchOffers() {
             try {
                 const res = await fetch(`${API_URL}?action=getOffers`);
                 const json = await res.json();
                 if (json.data && Array.isArray(json.data)) {
                     setOffers(json.data);
+                    // Update cache if we got data (or even if empty to reflect validity)
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(json.data));
                 }
             } catch (err) {
                 console.error("Failed to fetch offers", err);
@@ -33,7 +49,13 @@ export default function OffersCarousel() {
         return () => clearInterval(timer);
     }, [offers.length]);
 
-    if (loading) return null;
+    if (loading && offers.length === 0) {
+        return (
+            <div className="w-full bg-gray-900 aspect-video md:aspect-[21/9] animate-pulse flex items-center justify-center">
+                <div className="text-gray-700 dark:text-gray-600 font-bold text-2xl">Loading Offers...</div>
+            </div>
+        );
+    }
     if (offers.length === 0) return null;
 
     return (
