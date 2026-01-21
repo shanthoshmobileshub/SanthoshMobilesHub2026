@@ -22,7 +22,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (activeTab === "orders") fetchOrders();
-    if (activeTab === "products" || activeTab === "posts") fetchProducts();
+    if (activeTab === "products" || activeTab === "posts" || activeTab === "categories") fetchProducts();
   }, [activeTab]);
 
   const fetchOrders = async () => {

@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-// Fallback Static Items
-const staticItems = [
-  { k: 'Mobiles', img: 'images/Category/Mobiles.jpg' },
-  { k: 'AirPods', img: 'images/Category/AirPods.jpg' },
-  { k: 'iPads', img: 'images/Category/iPads.jpg' },
-  { k: 'Tabs', img: 'images/Category/Tabs.jpg' },
-  { k: 'Smart Watches', img: 'images/Category/Smart Watches.jpg' },
-  { k: 'Accessories', img: 'images/Category/Accessories.jpg' }
-]
 
 const API_URL = "https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";
 
 export default function CategoryIcons() {
-  const [items, setItems] = useState(staticItems);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     fetch(`${API_URL}?action=getCategories`)
@@ -30,6 +21,8 @@ export default function CategoryIcons() {
             link: c.link
           }));
           setItems(mapped);
+        } else {
+          setItems([]); // Ensure strictly empty if no data matches
         }
       })
       .catch(err => console.error("Failed to fetch categories", err));
