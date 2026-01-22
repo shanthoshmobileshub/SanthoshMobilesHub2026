@@ -1,4 +1,4 @@
-import{r as u,j as e,u as j,a as v,b as w,F as N,c as k,d as C}from"./index-DGQ7v_Yk.js";import{i as b}from"./products-Db1mWWYb.js";const $=({product:c})=>{if(!c)return e.jsx("div",{className:"w-64 p-4 border rounded text-center",children:e.jsx("div",{className:"text-gray-500",children:"Product data missing"})});const{id:i,title:s,brand:o,price:l,image:a}=c,d=j(),{addToCart:p,cart:x}=v(),{items:h,toggle:g}=w(),t=h.find(r=>r.id===i),n=x&&x.some(r=>r.id===i),m=r=>{if(r.stopPropagation(),n){const f=`*Hello Santhosh Mobiles, I want to Buy this Product:*
+import{r as u,j as e,u as j,a as v,b as w,F as N,c as k,d as C}from"./index-D_AwFy3Y.js";import{i as b}from"./products-Db1mWWYb.js";const $=({product:c})=>{if(!c)return e.jsx("div",{className:"w-64 p-4 border rounded text-center",children:e.jsx("div",{className:"text-gray-500",children:"Product data missing"})});const{id:i,title:s,brand:o,price:l,image:a}=c,d=j(),{addToCart:p,cart:x}=v(),{items:h,toggle:g}=w(),t=h.find(r=>r.id===i),n=x&&x.some(r=>r.id===i),m=r=>{if(r.stopPropagation(),n){const f=`*Hello Santhosh Mobiles, I want to Buy this Product:*
 
 *${s}*
 Brand: ${o}

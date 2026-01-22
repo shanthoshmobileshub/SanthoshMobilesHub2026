@@ -1,4 +1,4 @@
-import{e as u,a as b,r as n,j as e}from"./index-DGQ7v_Yk.js";import{i as y}from"./products-Db1mWWYb.js";import{F as c}from"./Footer-D1UiJvQc.js";const w="https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";function k(){var l,d;const{id:s}=u(),{addToCart:x,cart:i}=b(),[t,m]=n.useState(()=>y.find(a=>String(a.id)===s)||null),[h,g]=n.useState(!t),o=t&&i&&i.some(a=>a.id===t.id),f=()=>{if(o){const a=`*Hello Santhosh Mobiles, I want to Buy this Product:*
+import{e as u,a as b,r as n,j as e}from"./index-D_AwFy3Y.js";import{i as y}from"./products-Db1mWWYb.js";import{F as c}from"./Footer-BERrP5pn.js";const w="https://script.google.com/macros/s/AKfycbyignjYeqRXL-eont5SZ2Nao4e02PMQUuOvUD5s0LzTB932U60p4QRWfXvCa0cIV_ZcQw/exec";function k(){var l,d;const{id:s}=u(),{addToCart:x,cart:i}=b(),[t,m]=n.useState(()=>y.find(a=>String(a.id)===s)||null),[h,g]=n.useState(!t),o=t&&i&&i.some(a=>a.id===t.id),f=()=>{if(o){const a=`*Hello Santhosh Mobiles, I want to Buy this Product:*
 
 *${t.title}*
 Brand: ${t.brand}
